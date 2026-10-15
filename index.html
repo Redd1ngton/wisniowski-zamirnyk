@@ -118,6 +118,8 @@
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
         <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
+        <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
+        <div class="phs" data-tab="g"></div>
       </div>
 
       <div class="pane" id="p-i">
@@ -147,6 +149,8 @@
         <div class="hint">Ті самі правила, що й для гаражних: So/Ho — світлий проріз, N — перемичка, W1/W2 — бічні відступи.</div>
         <div class="warn-msg" id="w-i">Перевірте розмір: значення виглядає нетиповим</div>
         <label>Колір</label><input data-f="ral">
+        <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
+        <div class="phs" data-tab="i"></div>
       </div>
 
       <div class="pane" id="p-f">
@@ -191,18 +195,20 @@
         </div>
         <canvas id="cv" class="grid" width="300" height="220"></canvas>
         <div class="hint">Додатково: намалюйте контур ділянки пальцем. Ворота/хвіртку ставте схематично.</div>
+        <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
+        <div class="phs" data-tab="f"></div>
       </div>
 
       <div class="pane" id="p-d">
         <div id="dl"></div>
         <button class="btn" style="background:#edf2f7" onclick="addD()">+ Додати двері</button>
+        <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
+        <div class="phs" data-tab="d"></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Фото об'єкта</h2>
-      <div id="phs"></div>
-      <label>Примітки для клієнта / монтажника</label>
+      <h2>Загальні примітки</h2>
       <textarea id="nt" placeholder="Нерівності підлоги, комунікації, особливі умови, побажання клієнта..."></textarea>
     </div>
 
@@ -227,42 +233,69 @@
       document.getElementById('s-' + s.dataset.s).classList.add('on');
     });
 
-    const photoTips = {
-      f: 'Загальний вигляд фасаду з воротами/прорізом. Знімайте з вулиці, щоб було видно весь проріз.',
-      in: 'Вид зсередини гаража/приміщення на проріз. Показує перемичку і бічні стіни.',
-      li: 'Крупно перемичку (місце над прорізом). Важливо бачити висоту N і стан стелі.',
-      s: 'Бічні відступи W1 і W2. Зніміть ліву і праву сторону прорізу.',
-      fl: 'Підлога біля прорізу. Показує нерівності, ухил, покриття.',
-      e: 'Будь-які додаткові моменти: комунікації, труби, нерівності стін.'
+    const photoSets = {
+      g: [
+        {id:'f',l:'Фасад / загальний вигляд', tip:'Загальний вигляд фасаду з прорізом. Знімайте з вулиці.'},
+        {id:'in',l:'Зсередини', tip:'Вид зсередини на проріз. Видно перемичку і бічні стіни.'},
+        {id:'li',l:'Перемичка', tip:'Крупно перемичку (місце над прорізом).'},
+        {id:'s',l:'Бічні відступи', tip:'Ліва і права сторона прорізу (W1, W2).'},
+        {id:'fl',l:'Підлога', tip:'Підлога біля прорізу: нерівності, ухил.'},
+        {id:'e',l:'Додатково', tip:'Комунікації, труби, інші особливості.'}
+      ],
+      i: [
+        {id:'f',l:'Фасад / загальний вигляд', tip:'Загальний вигляд прорізу промислових воріт.'},
+        {id:'in',l:'Зсередини', tip:'Вид зсередини приміщення на проріз.'},
+        {id:'li',l:'Перемичка', tip:'Перемичка над прорізом.'},
+        {id:'s',l:'Бічні відступи', tip:'Бічні відступи від краю прорізу.'},
+        {id:'e',l:'Додатково', tip:'Особливості конструкції, комунікації.'}
+      ],
+      f: [
+        {id:'ov',l:'Загальний вигляд огорожі', tip:'Весь периметр або основна частина огорожі.'},
+        {id:'gate',l:'Ворота', tip:'Проріз воріт з обох сторін.'},
+        {id:'wick',l:'Хвіртка', tip:'Проріз хвіртки, напрямок відкриття.'},
+        {id:'sec',l:'Секції / прольоти', tip:'Типові прольоти між стовпами.'},
+        {id:'e',l:'Додатково', tip:'Стовпи, фундамент, нерівності ділянки.'}
+      ],
+      d: [
+        {id:'out',l:'Зовнішній вигляд', tip:'Двері ззовні, загальний ракурс.'},
+        {id:'in',l:'Зсередини', tip:'Двері зсередини приміщення.'},
+        {id:'fr',l:'Коробка / отвір', tip:'Світлий проріз, стан стін і коробки.'},
+        {id:'e',l:'Додатково', tip:'Фурнітура, особливості стіни, комунікації.'}
+      ]
     };
-    const pts = [
-      {id:'f',l:'Фасад / загальний вигляд'},
-      {id:'in',l:'Зсередини'},
-      {id:'li',l:'Перемичка'},
-      {id:'s',l:'Бічні відступи'},
-      {id:'fl',l:'Підлога'},
-      {id:'e',l:'Додатково'}
-    ];
-    document.getElementById('phs').innerHTML = pts.map(p => `
-      <div class="ph" id="b${p.id}">
-        <b>${p.l}</b>
-        <div class="ph-btns">
-          <button type="button" onclick="document.getElementById('cam${p.id}').click()">📷 Камера</button>
-          <button type="button" onclick="document.getElementById('lib${p.id}').click()">🖼️ Галерея</button>
-        </div>
-        <input class="file-hidden" id="cam${p.id}" type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)">
-        <input class="file-hidden" id="lib${p.id}" type="file" accept="image/*" data-i="${p.id}" onchange="op(this)">
-        <div class="pv"></div>
-        <div class="ph-ex">${photoTips[p.id]}</div>
-      </div>
-    `).join('');
+
     let ph = {};
+
+    function buildPhotos() {
+      document.querySelectorAll('.phs').forEach(box => {
+        const tab = box.dataset.tab;
+        const set = photoSets[tab] || [];
+        box.innerHTML = set.map(p => `
+          <div class="ph" id="b${tab}-${p.id}">
+            <b>${p.l}</b>
+            <div class="ph-btns">
+              <button type="button" onclick="document.getElementById('cam${tab}-${p.id}').click()">📷 Камера</button>
+              <button type="button" onclick="document.getElementById('lib${tab}-${p.id}').click()">🖼️ Галерея</button>
+            </div>
+            <input class="file-hidden" id="cam${tab}-${p.id}" type="file" accept="image/*" capture="environment" data-tab="${tab}" data-i="${p.id}" onchange="op(this)">
+            <input class="file-hidden" id="lib${tab}-${p.id}" type="file" accept="image/*" data-tab="${tab}" data-i="${p.id}" onchange="op(this)">
+            <div class="pv"></div>
+            <div class="ph-ex">${p.tip}</div>
+          </div>
+        `).join('');
+      });
+    }
+    buildPhotos();
+
     function op(el) {
       const f = el.files[0]; if (!f) return;
+      const tab = el.dataset.tab;
+      const id = el.dataset.i;
       const r = new FileReader();
       r.onload = e => {
-        ph[el.dataset.i] = {n: f.name, b: f, u: e.target.result};
-        const b = document.getElementById('b' + el.dataset.i);
+        if (!ph[tab]) ph[tab] = {};
+        ph[tab][id] = {n: f.name, b: f, u: e.target.result};
+        const b = document.getElementById('b' + tab + '-' + id);
         b.classList.add('ok');
         b.querySelector('.pv').innerHTML = `<img src="${e.target.result}">`;
       };
@@ -472,10 +505,16 @@ ${data.notes ? `<h2>Примітки</h2><div class="notes">${data.notes.replace
       const data = col();
       const z = new JSZip();
       z.file('бланк_замірів.html', mkHTML(data));
-      let n = 1;
-      for (const [k, v] of Object.entries(ph)) {
-        if (v.b) z.file(`фото_${n}_${k}.${(v.n.split('.').pop() || 'jpg').toLowerCase()}`, v.b);
-        n++;
+      const tabNames = {g:'гаражні', i:'промислові', f:'огородження', d:'двері'};
+      for (const [tab, photos] of Object.entries(ph)) {
+        let n = 1;
+        for (const [id, v] of Object.entries(photos)) {
+          if (v.b) {
+            const ext = (v.n.split('.').pop() || 'jpg').toLowerCase();
+            z.file(`фото_${tabNames[tab] || tab}_${n}_${id}.${ext}`, v.b);
+            n++;
+          }
+        }
       }
       return { b: await z.generateAsync({ type: 'blob' }), n: `miraW_${Date.now()}.zip`, d: data };
     }
