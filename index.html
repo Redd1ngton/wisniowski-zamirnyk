@@ -24,7 +24,12 @@
     .pane.on { display: block; }
     .diag { background: #f8fafc; border: 1px solid var(--bd); border-radius: 8px; padding: 8px; margin: 8px 0; position: relative; }
     .diag svg { width: 100%; height: auto; display: block; }
-    .ov { position: absolute; width: 62px; font-size: .7rem; padding: 3px; text-align: center; border: 1px solid #3182ce; border-radius: 4px; background: #fff; }
+    .ov { position: absolute; width: 58px; font-size: .7rem; padding: 3px; text-align: center; border-radius: 4px; background: #fff; font-weight: 600; }
+    .ov.n { border: 2px solid #22c55e; }
+    .ov.w { border: 2px solid #f97316; }
+    .ov.ho { border: 2px solid #ef4444; }
+    .ov.so { border: 2px solid #3b82f6; }
+    .ov.eo { border: 2px solid #8b5cf6; }
     .grid { border: 1px solid var(--bd); border-radius: 6px; background: #e2e8f0; cursor: crosshair; display: block; margin: 8px auto; }
     .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
     .tools button { padding: 7px 10px; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; font-size: .8rem; }
@@ -68,48 +73,69 @@
       </div>
 
       <div class="pane on" id="p-g">
-        <div class="diag" id="dg">
-          <svg viewBox="0 0 360 260">
-            <polygon points="60,40 300,40 300,200 60,200" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2"/>
-            <rect x="100" y="80" width="160" height="100" fill="#ffffff" stroke="#1e3a5f" stroke-width="2.5"/>
-            <text x="180" y="135" text-anchor="middle" font-size="13" fill="#1e3a5f" font-weight="bold">Проріз</text>
-            <text x="180" y="30" text-anchor="middle" font-size="11" fill="#1e3a5f">N</text>
-            <text x="45" y="135" text-anchor="middle" font-size="11" fill="#1e3a5f">W1</text>
-            <text x="315" y="135" text-anchor="middle" font-size="11" fill="#1e3a5f">W2</text>
-            <text x="180" y="225" text-anchor="middle" font-size="11" fill="#1e3a5f">So</text>
-            <text x="180" y="70" text-anchor="middle" font-size="11" fill="#1e3a5f">Ho</text>
-            <text x="40" y="210" text-anchor="middle" font-size="11" fill="#1e3a5f">Eo</text>
+        <div class="diag">
+          <svg viewBox="0 0 380 280">
+            <rect x="70" y="50" width="240" height="160" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2.5"/>
+            <rect x="110" y="90" width="160" height="90" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
+            <text x="190" y="140" text-anchor="middle" font-size="14" fill="#1e3a5f" font-weight="bold">Проріз</text>
+            <line x1="190" y1="28" x2="190" y2="48" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arrG)" marker-start="url(#arrG-s)"/>
+            <text x="190" y="20" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="bold">N</text>
+            <line x1="20" y1="135" x2="65" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="40" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W1</text>
+            <line x1="315" y1="135" x2="360" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="340" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W2</text>
+            <line x1="280" y1="90" x2="280" y2="180" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrR)" marker-start="url(#arrR-s)"/>
+            <text x="292" y="140" text-anchor="middle" font-size="11" fill="#ef4444" font-weight="bold">Ho</text>
+            <line x1="110" y1="230" x2="270" y2="230" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
+            <text x="190" y="248" text-anchor="middle" font-size="11" fill="#3b82f6" font-weight="bold">So</text>
+            <text x="40" y="210" text-anchor="middle" font-size="11" fill="#8b5cf6" font-weight="bold">Eo</text>
+            <defs>
+              <marker id="arrG" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#22c55e"/></marker>
+              <marker id="arrG-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#22c55e"/></marker>
+              <marker id="arrO" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f97316"/></marker>
+              <marker id="arrO-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#f97316"/></marker>
+              <marker id="arrR" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ef4444"/></marker>
+              <marker id="arrR-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#ef4444"/></marker>
+              <marker id="arrB" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3b82f6"/></marker>
+              <marker id="arrB-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#3b82f6"/></marker>
+            </defs>
           </svg>
-          <input class="ov" data-f="n" placeholder="N" style="top:8px; left:145px;">
-          <input class="ov" data-f="w1" placeholder="W1" style="top:105px; left:4px;">
-          <input class="ov" data-f="w2" placeholder="W2" style="top:105px; right:4px;">
-          <input class="ov" data-f="ho" placeholder="Ho" style="top:55px; left:145px;">
-          <input class="ov" data-f="so" placeholder="So" style="bottom:18px; left:145px;">
-          <input class="ov" data-f="eo" placeholder="Eo" style="bottom:28px; left:8px;">
+          <input class="ov n" data-f="n" placeholder="N" style="top:2px; left:160px;">
+          <input class="ov w" data-f="w1" placeholder="W1" style="top:110px; left:2px;">
+          <input class="ov w" data-f="w2" placeholder="W2" style="top:110px; right:2px;">
+          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:48px; left:160px;">
+          <input class="ov so" data-f="so" placeholder="So" style="bottom:8px; left:160px;">
+          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:28px; left:6px;">
         </div>
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
         <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
-        <div class="hint">Введіть розміри безпосередньо на схемі (мм).</div>
+        <div class="hint">Кольори стрілок відповідають кольорам полів. Розміри в мм.</div>
       </div>
 
       <div class="pane" id="p-i">
         <div class="diag">
-          <svg viewBox="0 0 360 200">
-            <rect x="80" y="40" width="200" height="120" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2"/>
-            <rect x="110" y="70" width="140" height="80" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
-            <text x="180" y="115" text-anchor="middle" font-size="12" fill="#1e3a5f">Проріз</text>
-            <text x="180" y="30" text-anchor="middle" font-size="11">N</text>
-            <text x="55" y="110" text-anchor="middle" font-size="11">W1</text>
-            <text x="305" y="110" text-anchor="middle" font-size="11">W2</text>
-            <text x="180" y="185" text-anchor="middle" font-size="11">So</text>
+          <svg viewBox="0 0 380 220">
+            <rect x="70" y="40" width="240" height="140" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2"/>
+            <rect x="110" y="70" width="160" height="80" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
+            <text x="190" y="115" text-anchor="middle" font-size="13" fill="#1e3a5f">Проріз</text>
+            <line x1="190" y1="22" x2="190" y2="38" stroke="#22c55e" stroke-width="2" marker-end="url(#arrG)" marker-start="url(#arrG-s)"/>
+            <text x="190" y="16" text-anchor="middle" font-size="10" fill="#22c55e">N</text>
+            <line x1="20" y1="110" x2="65" y2="110" stroke="#f97316" stroke-width="2" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="40" y="100" text-anchor="middle" font-size="10" fill="#f97316">W1</text>
+            <line x1="315" y1="110" x2="360" y2="110" stroke="#f97316" stroke-width="2" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="340" y="100" text-anchor="middle" font-size="10" fill="#f97316">W2</text>
+            <line x1="280" y1="70" x2="280" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#arrR)" marker-start="url(#arrR-s)"/>
+            <text x="292" y="115" text-anchor="middle" font-size="10" fill="#ef4444">Ho</text>
+            <line x1="110" y1="190" x2="270" y2="190" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
+            <text x="190" y="208" text-anchor="middle" font-size="10" fill="#3b82f6">So</text>
           </svg>
-          <input class="ov" data-f="n" placeholder="N" style="top:6px; left:145px;">
-          <input class="ov" data-f="w1" placeholder="W1" style="top:80px; left:4px;">
-          <input class="ov" data-f="w2" placeholder="W2" style="top:80px; right:4px;">
-          <input class="ov" data-f="so" placeholder="So" style="bottom:8px; left:145px;">
-          <input class="ov" data-f="ho" placeholder="Ho" style="top:50px; left:145px;">
-          <input class="ov" data-f="eo" placeholder="Eo" style="bottom:8px; left:8px;">
+          <input class="ov n" data-f="n" placeholder="N" style="top:0; left:160px;">
+          <input class="ov w" data-f="w1" placeholder="W1" style="top:85px; left:2px;">
+          <input class="ov w" data-f="w2" placeholder="W2" style="top:85px; right:2px;">
+          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:40px; left:160px;">
+          <input class="ov so" data-f="so" placeholder="So" style="bottom:4px; left:160px;">
+          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:4px; left:6px;">
         </div>
         <label>Колір</label><input data-f="ral">
       </div>
@@ -120,7 +146,6 @@
           <div class="subtab" data-s="gate">Ворота</div>
           <div class="subtab" data-s="wick">Хвіртка</div>
         </div>
-
         <div class="subpane on" id="s-sec">
           <div id="sec-list"></div>
           <div style="display:flex; gap:6px; margin-top:6px; align-items:center;">
@@ -130,7 +155,6 @@
           </div>
           <div class="hint">Додавайте кожен проліт між стовпами окремо.</div>
         </div>
-
         <div class="subpane" id="s-gate">
           <label>Тип воріт</label>
           <select data-f="gate-type"><option value="">—</option><option>Розпашні</option><option>Відкатні</option></select>
@@ -139,17 +163,14 @@
           <label>Сторона відкату</label>
           <select data-f="gate-side"><option value="">—</option><option>Ліва (Л)</option><option>Права (П)</option></select>
         </div>
-
         <div class="subpane" id="s-wick">
           <label>Ширина (мм)</label><input type="number" data-f="wick-w">
           <label>Висота (мм)</label><input type="number" data-f="wick-h">
           <label>Напрямок відкриття</label>
           <select data-f="wick-dir"><option value="">—</option><option>ЛЗ — ліва зовні</option><option>ЛВ — ліва всередину</option><option>ПЗ — права зовні</option><option>ПВ — права всередину</option></select>
         </div>
-
         <label style="margin-top:12px">Загальна довжина огорожі (м)</label><input type="number" data-f="len" step="0.1">
         <label>Колір RAL</label><input data-f="ral">
-
         <div class="tools">
           <button id="tl" class="on">Лінія</button>
           <button id="tg">Ворота</button>
@@ -317,7 +338,6 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       let y = 18;
-
       doc.setFillColor(30, 58, 95);
       doc.rect(0, 0, 210, 22, 'F');
       doc.setTextColor(255, 255, 255);
@@ -326,7 +346,6 @@
       doc.text('MiraW — Бланк замірів', 105, 14, { align: 'center' });
       doc.setTextColor(0, 0, 0);
       y = 30;
-
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.text(`Дата: ${data.date}`, 15, y);
@@ -437,7 +456,6 @@
         doc.setTextColor(150);
         doc.text(`MiraW — бланк замірів   стор. ${i}/${pageCount}`, 105, 290, { align: 'center' });
       }
-
       return doc.output('blob');
     }
 
