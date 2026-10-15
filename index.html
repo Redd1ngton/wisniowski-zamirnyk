@@ -426,16 +426,16 @@
             <rect x="110" y="90" width="160" height="90" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
             <text x="190" y="140" text-anchor="middle" font-size="13" fill="#1e3a5f" font-weight="bold">Проріз</text>
             <line x1="190" y1="28" x2="190" y2="48" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arrG)" marker-start="url(#arrG-s)"/>
-            <text x="190" y="18" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="bold">N: ${v('n')}</text>
-            <line x1="20" y1="135" x2="65" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
-            <text x="42" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W1: ${v('w1')}</text>
-            <line x1="315" y1="135" x2="360" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
-            <text x="338" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W2: ${v('w2')}</text>
-            <line x1="280" y1="90" x2="280" y2="180" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrR)" marker-start="url(#arrR-s)"/>
-            <text x="295" y="140" text-anchor="middle" font-size="11" fill="#ef4444" font-weight="bold">Ho: ${v('ho')}</text>
-            <line x1="110" y1="230" x2="270" y2="230" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
-            <text x="190" y="248" text-anchor="middle" font-size="11" fill="#3b82f6" font-weight="bold">So: ${v('so')}</text>
-            <text x="40" y="210" text-anchor="middle" font-size="11" fill="#8b5cf6" font-weight="bold">Eo: ${v('eo')}</text>
+            <text x="190" y="16" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="bold">N: ${v('n')}</text>
+            <line x1="15" y1="135" x2="65" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="40" y="122" text-anchor="middle" font-size="10" fill="#f97316" font-weight="bold">W1: ${v('w1')}</text>
+            <line x1="315" y1="135" x2="365" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="340" y="122" text-anchor="middle" font-size="10" fill="#f97316" font-weight="bold">W2: ${v('w2')}</text>
+            <line x1="285" y1="90" x2="285" y2="180" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrR)" marker-start="url(#arrR-s)"/>
+            <text x="300" y="138" text-anchor="middle" font-size="10" fill="#ef4444" font-weight="bold">Ho: ${v('ho')}</text>
+            <line x1="110" y1="235" x2="270" y2="235" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
+            <text x="190" y="252" text-anchor="middle" font-size="10" fill="#3b82f6" font-weight="bold">So: ${v('so')}</text>
+            <text x="38" y="205" text-anchor="middle" font-size="10" fill="#8b5cf6" font-weight="bold">Eo: ${v('eo')}</text>
             <defs>
               <marker id="arrG" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#22c55e"/></marker>
               <marker id="arrG-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#22c55e"/></marker>
@@ -496,6 +496,18 @@
 
       const schemaImg = (ptsL.length || mks.length) ? `<h3>Схема огорожі</h3><img src="${cv.toDataURL('image/png')}" style="max-width:100%;border:1px solid #ccc">` : '';
 
+      let photosHtml = '';
+      const tabNames = {g:'Гаражні ворота', i:'Промислові ворота', f:'Огородження', d:'Двері'};
+      for (const [tab, photos] of Object.entries(ph)) {
+        const items = Object.entries(photos).filter(([,v]) => v.u);
+        if (!items.length) continue;
+        photosHtml += `<h2>Фото — ${tabNames[tab] || tab}</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:8px 0;">`;
+        for (const [id, v] of items) {
+          photosHtml += `<div style="text-align:center;"><img src="${v.u}" style="max-width:100%;border:1px solid #e2e8f0;border-radius:6px;"><div style="font-size:.75rem;color:#718096;margin-top:2px;">${id}</div></div>`;
+        }
+        photosHtml += '</div>';
+      }
+
       return `<!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -529,6 +541,7 @@ ${data.m.ind ? `<h2>Промислові ворота</h2>${gateSVG(data.m.ind)}
 ${data.m.fence ? `<h2>Огородження</h2><table>${rows(data.m.fence, ['pts','mks','sections'])}${sectionsHtml}</table>${schemaImg}` : ''}
 ${doorsHtml ? `<h2>Двері</h2>${doorsHtml}` : ''}
 ${data.notes ? `<h2>Примітки</h2><div class="notes">${data.notes.replace(/</g,'<')}</div>` : ''}
+${photosHtml}
 
 <p style="margin-top:30px;font-size:.8rem;color:#718096">MiraW — бланк замірів. Згенеровано автоматично.</p>
 </body>
