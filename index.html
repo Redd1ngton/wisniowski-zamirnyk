@@ -2,382 +2,323 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Замірник WIŚNIOWSKI</title>
   <meta name="theme-color" content="#1e3a5f">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    :root { --primary: #1e3a5f; --accent: #3182ce; --bg: #f7fafc; --border: #e2e8f0; --success: #38a169; }
+    :root { --p: #1e3a5f; --a: #3182ce; --bg: #f7fafc; --bd: #e2e8f0; --ok: #38a169; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); }
-    header { background: var(--primary); color: white; padding: 14px; text-align: center; position: sticky; top: 0; z-index: 100; }
-    .container { max-width: 560px; margin: 0 auto; padding: 12px 16px 40px; }
-    section { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-    h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
-    label { display: block; font-weight: 500; margin: 10px 0 4px; font-size: .9rem; }
-    input, select, textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-    .tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; }
-    .tab { flex: 1; min-width: 100px; padding: 10px 6px; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: .8rem; text-align: center; }
-    .tab.active { border-color: var(--accent); background: #ebf8ff; font-weight: 600; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .diagram { background: #f1f5f9; border-radius: 8px; padding: 12px; margin: 10px 0; position: relative; }
-    .meas-input { position: absolute; width: 64px; font-size: .75rem; padding: 3px; text-align: center; border: 1px solid var(--accent); border-radius: 4px; background: white; }
-    .grid-canvas { border: 1px solid var(--border); border-radius: 8px; background: #e2e8f0; cursor: crosshair; }
-    .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
-    .tools button { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: .85rem; }
-    .door-block { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; position: relative; }
-    .remove-door { position: absolute; top: 6px; right: 6px; background: #e53e3e; color: white; border: none; border-radius: 4px; padding: 2px 7px; cursor: pointer; }
-    .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-success { background: var(--success); color: white; }
-    .photo-box { border: 2px dashed var(--border); border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 8px; }
-    .photo-box.has { border-color: var(--success); }
-    .photo-box img { max-width: 100%; max-height: 110px; margin-top: 6px; }
-    .status { text-align: center; margin-top: 8px; font-size: .85rem; color: #718096; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #1a202c; }
+    header { background: var(--p); color: #fff; padding: 12px; text-align: center; position: sticky; top: 0; z-index: 50; }
+    .wrap { max-width: 540px; margin: 0 auto; padding: 10px 12px 30px; }
+    .card { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+    h2 { font-size: 1rem; color: var(--p); border-bottom: 2px solid var(--a); padding-bottom: 5px; margin-bottom: 10px; }
+    label { display: block; font-weight: 600; font-size: .85rem; margin: 8px 0 3px; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--bd); border-radius: 6px; font-size: 1rem; }
+    .tabs { display: flex; gap: 4px; overflow-x: auto; margin-bottom: 10px; }
+    .tab { flex: 1; min-width: 90px; padding: 8px 4px; border: 2px solid var(--bd); border-radius: 8px; text-align: center; font-size: .75rem; cursor: pointer; background: #fff; }
+    .tab.on { border-color: var(--a); background: #ebf8ff; font-weight: 700; }
+    .pane { display: none; }
+    .pane.on { display: block; }
+    .diag { background: #f1f5f9; border-radius: 8px; padding: 8px; margin: 8px 0; position: relative; min-height: 220px; }
+    .diag svg { width: 100%; height: auto; display: block; }
+    .ov { position: absolute; width: 58px; font-size: .7rem; padding: 2px; text-align: center; border: 1px solid var(--a); border-radius: 3px; background: #fff; }
+    .grid { border: 1px solid var(--bd); border-radius: 6px; background: #e2e8f0; cursor: crosshair; display: block; margin: 8px auto; }
+    .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+    .tools button { padding: 7px 10px; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; font-size: .8rem; }
+    .tools button.on { background: var(--a); color: #fff; }
+    .door { border: 1px solid var(--bd); border-radius: 8px; padding: 10px; margin-bottom: 10px; position: relative; }
+    .x { position: absolute; top: 6px; right: 6px; background: #e53e3e; color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; cursor: pointer; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 6px; }
+    .b1 { background: var(--p); color: #fff; }
+    .b2 { background: var(--ok); color: #fff; }
+    .ph { border: 2px dashed var(--bd); border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 6px; }
+    .ph.ok { border-color: var(--ok); }
+    .ph img { max-width: 100%; max-height: 100px; margin-top: 4px; }
+    .st { text-align: center; font-size: .8rem; color: #718096; margin-top: 6px; }
   </style>
 </head>
 <body>
-  <header><h1>Замірник WIŚNIOWSKI</h1></header>
-  <div class="container">
-    <section>
+  <header><b>Замірник WIŚNIOWSKI</b></header>
+  <div class="wrap">
+    <div class="card">
       <h2>Основні дані</h2>
-      <label>Замовник</label><input type="text" id="client-name" placeholder="ПІБ / компанія + телефон">
-      <label>Адреса об'єкта</label><input type="text" id="client-address" placeholder="Місто, вулиця, номер">
-      <label>Замірщик</label><input type="text" id="manager" placeholder="Ваше ім'я">
-    </section>
+      <label>Замовник</label><input id="cn" placeholder="ПІБ / компанія + телефон">
+      <label>Адреса</label><input id="ca" placeholder="Місто, вулиця, номер">
+      <label>Замірщик</label><input id="mg" placeholder="Ваше ім'я">
+    </div>
 
-    <section>
-      <h2>Тип замірів</h2>
+    <div class="card">
+      <h2>Заміри</h2>
       <div class="tabs">
-        <div class="tab active" data-tab="garage">Гаражні</div>
-        <div class="tab" data-tab="industrial">Промислові</div>
-        <div class="tab" data-tab="fence">Огородження</div>
-        <div class="tab" data-tab="doors">Двері</div>
+        <div class="tab on" data-t="g">Гаражні</div>
+        <div class="tab" data-t="i">Промислові</div>
+        <div class="tab" data-t="f">Огородження</div>
+        <div class="tab" data-t="d">Двері</div>
       </div>
 
-      <div class="tab-content active" id="tab-garage">
-        <div class="diagram">
-          <svg viewBox="0 0 340 240" style="width:100%">
-            <rect x="70" y="45" width="200" height="140" fill="none" stroke="#1e3a5f" stroke-width="3"/>
-            <text x="170" y="120" text-anchor="middle" font-size="15" fill="#1e3a5f">So</text>
-            <text x="40" y="120" text-anchor="middle" font-size="13" fill="#1e3a5f" transform="rotate(-90 40 120)">Ho</text>
-            <line x1="70" y1="28" x2="270" y2="28" stroke="#3182ce" stroke-width="2"/>
-            <text x="170" y="20" text-anchor="middle" font-size="11" fill="#3182ce">N</text>
-            <line x1="40" y1="45" x2="40" y2="185" stroke="#3182ce" stroke-width="2"/>
-            <text x="28" y="115" text-anchor="middle" font-size="11" fill="#3182ce" transform="rotate(-90 28 115)">W1</text>
-            <line x1="300" y1="45" x2="300" y2="185" stroke="#3182ce" stroke-width="2"/>
-            <text x="312" y="115" text-anchor="middle" font-size="11" fill="#3182ce" transform="rotate(90 312 115)">W2</text>
-            <text x="170" y="215" text-anchor="middle" font-size="10" fill="#718096">Проріз (ззовні)</text>
+      <div class="pane on" id="p-g">
+        <div class="diag" id="dg">
+          <svg viewBox="0 0 320 230">
+            <rect x="65" y="40" width="190" height="130" fill="none" stroke="#1e3a5f" stroke-width="2.5"/>
+            <text x="160" y="110" text-anchor="middle" font-size="14" fill="#1e3a5f">So</text>
+            <text x="35" y="110" text-anchor="middle" font-size="12" fill="#1e3a5f" transform="rotate(-90 35 110)">Ho</text>
+            <line x1="65" y1="25" x2="255" y2="25" stroke="#3182ce" stroke-width="2"/>
+            <text x="160" y="18" text-anchor="middle" font-size="11" fill="#3182ce">N</text>
+            <line x1="35" y1="40" x2="35" y2="170" stroke="#3182ce" stroke-width="2"/>
+            <text x="22" y="105" text-anchor="middle" font-size="11" fill="#3182ce" transform="rotate(-90 22 105)">W1</text>
+            <line x1="285" y1="40" x2="285" y2="170" stroke="#3182ce" stroke-width="2"/>
+            <text x="298" y="105" text-anchor="middle" font-size="11" fill="#3182ce" transform="rotate(90 298 105)">W2</text>
+            <text x="160" y="205" text-anchor="middle" font-size="10" fill="#718096">Проріз ззовні</text>
           </svg>
-          <input class="meas-input" data-field="so" placeholder="So" style="top:100px;left:135px">
-          <input class="meas-input" data-field="ho" placeholder="Ho" style="top:100px;left:5px;transform:rotate(-90deg)">
-          <input class="meas-input" data-field="n" placeholder="N" style="top:2px;left:135px">
-          <input class="meas-input" data-field="w1" placeholder="W1" style="top:95px;left:2px">
-          <input class="meas-input" data-field="w2" placeholder="W2" style="top:95px;right:2px">
-          <input class="meas-input" data-field="eo" placeholder="Eo" style="bottom:25px;left:135px">
+          <input class="ov" data-f="so" placeholder="So" style="top:95px;left:130px">
+          <input class="ov" data-f="ho" placeholder="Ho" style="top:95px;left:2px;transform:rotate(-90deg)">
+          <input class="ov" data-f="n" placeholder="N" style="top:2px;left:130px">
+          <input class="ov" data-f="w1" placeholder="W1" style="top:90px;left:2px">
+          <input class="ov" data-f="w2" placeholder="W2" style="top:90px;right:2px">
+          <input class="ov" data-f="eo" placeholder="Eo" style="bottom:20px;left:130px">
         </div>
-        <label>Колір RAL</label><input type="text" data-field="ral">
+        <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
-        <select data-field="control"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт/смартфон</option></select>
+        <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт</option></select>
       </div>
 
-      <div class="tab-content" id="tab-industrial">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label>So (мм)</label><input type="number" data-field="so"></div>
-          <div><label>Ho (мм)</label><input type="number" data-field="ho"></div>
+      <div class="pane" id="p-i">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><label>So</label><input type="number" data-f="so"></div>
+          <div><label>Ho</label><input type="number" data-f="ho"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-          <input type="number" data-field="n" placeholder="N">
-          <input type="number" data-field="eo" placeholder="Eo">
-          <input type="number" data-field="w1" placeholder="W1">
-          <input type="number" data-field="w2" placeholder="W2">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+          <input type="number" data-f="n" placeholder="N">
+          <input type="number" data-f="eo" placeholder="Eo">
+          <input type="number" data-f="w1" placeholder="W1">
+          <input type="number" data-f="w2" placeholder="W2">
         </div>
-        <label>Колір</label><input type="text" data-field="ral">
+        <label>Колір</label><input data-f="ral">
       </div>
 
-      <div class="tab-content" id="tab-fence">
-        <label>Довжина (м)</label><input type="number" data-field="length" step="0.1">
-        <label>Висота (мм)</label><input type="number" data-field="height">
-        <label>Колір RAL</label><input type="text" data-field="ral">
+      <div class="pane" id="p-f">
+        <label>Довжина (м)</label><input type="number" data-f="len" step="0.1">
+        <label>Висота (мм)</label><input type="number" data-f="h">
+        <label>Колір</label><input data-f="ral">
         <div class="tools">
-          <button type="button" id="tool-line">Лінія</button>
-          <button type="button" id="tool-gate">Ворота</button>
-          <button type="button" id="tool-wicket">Хвіртка</button>
-          <button type="button" id="tool-clear">Очистити</button>
+          <button id="tl" class="on">Лінія</button>
+          <button id="tg">Ворота</button>
+          <button id="tw">Хвіртка</button>
+          <button id="tc">Очистити</button>
         </div>
-        <canvas id="fence-canvas" class="grid-canvas" width="320" height="260"></canvas>
+        <canvas id="cv" class="grid" width="300" height="240"></canvas>
+        <p style="font-size:.7rem;color:#718096">Клік — точка. Лінія з’єднує. Ворота/хвіртка — виберіть тип.</p>
       </div>
 
-      <div class="tab-content" id="tab-doors">
-        <div id="doors-list"></div>
-        <button type="button" class="btn" style="background:#edf2f7" onclick="addDoor()">+ Додати двері</button>
+      <div class="pane" id="p-d">
+        <div id="dl"></div>
+        <button class="btn" style="background:#edf2f7" onclick="addD()">+ Додати двері</button>
       </div>
-    </section>
+    </div>
 
-    <section>
-      <h2>Фото об'єкта</h2>
-      <div id="photos"></div>
+    <div class="card">
+      <h2>Фото</h2>
+      <div id="phs"></div>
       <label>Примітки</label>
-      <textarea id="notes" placeholder="Нерівності, комунікації, особливі умови..."></textarea>
-    </section>
+      <textarea id="nt" placeholder="Нерівності, комунікації..."></textarea>
+    </div>
 
-    <section>
-      <button class="btn btn-primary" onclick="shareArchive()">Поділитися архівом (PDF)</button>
-      <button class="btn btn-success" onclick="downloadArchive()">Завантажити ZIP з PDF</button>
-      <div class="status" id="status"></div>
-    </section>
+    <div class="card">
+      <button class="btn b1" onclick="share()">Поділитися архівом (PDF)</button>
+      <button class="btn b2" onclick="dl()">Завантажити ZIP</button>
+      <div class="st" id="st"></div>
+    </div>
   </div>
 
   <script>
-    document.querySelectorAll('.tab').forEach(t => {
-      t.onclick = () => {
-        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
-        t.classList.add('active');
-        document.getElementById('tab-' + t.dataset.tab).classList.add('active');
-      };
+    document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+      document.querySelectorAll('.pane').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+      document.getElementById('p-' + t.dataset.t).classList.add('on');
     });
 
-    const photoTypes = [
-      {id:'front', label:'Фасад'}, {id:'inside', label:'Зсередини'},
-      {id:'lintel', label:'Перемичка'}, {id:'sides', label:'Бічні'},
-      {id:'floor', label:'Підлога'}, {id:'extra', label:'Додатково'}
-    ];
-    document.getElementById('photos').innerHTML = photoTypes.map(p => `
-      <div class="photo-box" id="box-${p.id}">
-        <strong>${p.label}</strong><br>
-        <input type="file" accept="image/*" capture="environment" data-id="${p.id}" onchange="onPhoto(this)">
-        <div class="preview"></div>
-      </div>`).join('');
-
-    let photos = {};
-    function onPhoto(input) {
-      const id = input.dataset.id, file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        photos[id] = {name: file.name, blob: file, dataUrl: e.target.result};
-        const box = document.getElementById('box-'+id);
-        box.classList.add('has');
-        box.querySelector('.preview').innerHTML = `<img src="${e.target.result}">`;
+    const pts = [{id:'f',l:'Фасад'},{id:'in',l:'Зсередини'},{id:'li',l:'Перемичка'},{id:'s',l:'Бічні'},{id:'fl',l:'Підлога'},{id:'e',l:'Додатково'}];
+    document.getElementById('phs').innerHTML = pts.map(p => `<div class="ph" id="b${p.id}"><b>${p.l}</b><br><input type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)"><div class="pv"></div></div>`).join('');
+    let ph = {};
+    function op(el) {
+      const f = el.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = e => {
+        ph[el.dataset.i] = {n: f.name, b: f, u: e.target.result};
+        const b = document.getElementById('b' + el.dataset.i);
+        b.classList.add('ok');
+        b.querySelector('.pv').innerHTML = `<img src="${e.target.result}">`;
       };
-      reader.readAsDataURL(file);
+      r.readAsDataURL(f);
     }
 
-    let doorCount = 0;
-    function addDoor() {
-      doorCount++;
-      const div = document.createElement('div');
-      div.className = 'door-block';
-      div.innerHTML = `
-        <button class="remove-door" onclick="this.parentElement.remove()">×</button>
-        <label>Тип</label>
-        <select data-field="type"><option>CREO</option><option>Deco</option><option>Профільні</option><option>ECO</option><option>Вогнестійкі</option></select>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-          <div><label>Ширина</label><input type="number" data-field="w"></div>
-          <div><label>Висота</label><input type="number" data-field="h"></div>
+    let dc = 0;
+    function addD() {
+      dc++;
+      const d = document.createElement('div');
+      d.className = 'door';
+      d.innerHTML = `<button class="x" onclick="this.parentElement.remove()">×</button>
+        <label>Тип</label><select data-f="t"><option>CREO</option><option>Deco</option><option>Профільні</option><option>ECO</option></select>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+          <div><label>Ширина</label><input type="number" data-f="w"></div>
+          <div><label>Висота</label><input type="number" data-f="h"></div>
         </div>
-        <label>Коробка/стіна</label><input type="text" data-field="frame">
-        <label>Колір</label><input type="text" data-field="color">
-        <label>Фурнітура</label><input type="text" data-field="hw">
-      `;
-      document.getElementById('doors-list').appendChild(div);
+        <label>Коробка</label><input data-f="fr">
+        <label>Колір</label><input data-f="c">
+        <label>Фурнітура</label><input data-f="hw">`;
+      document.getElementById('dl').appendChild(d);
     }
-    addDoor();
+    addD();
 
-    const canvas = document.getElementById('fence-canvas');
-    const ctx = canvas.getContext('2d');
-    let points = [], markers = [], tool = 'line';
-    document.getElementById('tool-line').onclick = () => tool = 'line';
-    document.getElementById('tool-gate').onclick = () => tool = 'gate';
-    document.getElementById('tool-wicket').onclick = () => tool = 'wicket';
-    document.getElementById('tool-clear').onclick = () => { points=[]; markers=[]; draw(); };
+    const cv = document.getElementById('cv'), cx = cv.getContext('2d');
+    let ptsL = [], mks = [], tl = 'l';
+    document.getElementById('tl').onclick = () => { tl = 'l'; document.querySelectorAll('.tools button').forEach(b => b.classList.remove('on')); document.getElementById('tl').classList.add('on'); };
+    document.getElementById('tg').onclick = () => { tl = 'g'; document.querySelectorAll('.tools button').forEach(b => b.classList.remove('on')); document.getElementById('tg').classList.add('on'); };
+    document.getElementById('tw').onclick = () => { tl = 'w'; document.querySelectorAll('.tools button').forEach(b => b.classList.remove('on')); document.getElementById('tw').classList.add('on'); };
+    document.getElementById('tc').onclick = () => { ptsL = []; mks = []; draw(); };
     function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.strokeStyle='#cbd5e0'; ctx.lineWidth=1;
-      for(let x=0;x<canvas.width;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
-      for(let y=0;y<canvas.height;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
-      if(points.length>1){
-        ctx.strokeStyle='#1e3a5f'; ctx.lineWidth=3; ctx.beginPath();
-        ctx.moveTo(points[0].x,points[0].y);
-        for(let i=1;i<points.length;i++) ctx.lineTo(points[i].x,points[i].y);
-        ctx.stroke();
+      cx.clearRect(0, 0, cv.width, cv.height);
+      cx.strokeStyle = '#cbd5e0'; cx.lineWidth = 1;
+      for (let x = 0; x < cv.width; x += 20) { cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, cv.height); cx.stroke(); }
+      for (let y = 0; y < cv.height; y += 20) { cx.beginPath(); cx.moveTo(0, y); cx.lineTo(cv.width, y); cx.stroke(); }
+      if (ptsL.length > 1) {
+        cx.strokeStyle = '#1e3a5f'; cx.lineWidth = 3; cx.beginPath();
+        cx.moveTo(ptsL[0].x, ptsL[0].y);
+        for (let i = 1; i < ptsL.length; i++) cx.lineTo(ptsL[i].x, ptsL[i].y);
+        cx.stroke();
       }
-      points.forEach(p=>{ctx.fillStyle='#3182ce';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();});
-      markers.forEach(m=>{
-        ctx.fillStyle=m.type==='gate'?'#38a169':'#dd6b20';
-        ctx.fillRect(m.x-14,m.y-9,28,18);
-        ctx.fillStyle='white'; ctx.font='10px sans-serif'; ctx.textAlign='center';
-        ctx.fillText(m.label||(m.type==='gate'?'В':'Х'), m.x, m.y+4);
+      ptsL.forEach(p => { cx.fillStyle = '#3182ce'; cx.beginPath(); cx.arc(p.x, p.y, 4, 0, Math.PI * 2); cx.fill(); });
+      mks.forEach(m => {
+        cx.fillStyle = m.t === 'g' ? '#38a169' : '#dd6b20';
+        cx.fillRect(m.x - 12, m.y - 8, 24, 16);
+        cx.fillStyle = '#fff'; cx.font = '9px sans-serif'; cx.textAlign = 'center';
+        cx.fillText(m.l, m.x, m.y + 3);
       });
     }
     draw();
-    canvas.onclick = e => {
-      const r = canvas.getBoundingClientRect();
+    cv.onclick = e => {
+      const r = cv.getBoundingClientRect();
       const x = e.clientX - r.left, y = e.clientY - r.top;
-      if(tool==='line') points.push({x,y});
-      else if(tool==='gate') markers.push({type:'gate',x,y,label:prompt('Ворота: Л або П','Л')||'Л'});
-      else if(tool==='wicket') markers.push({type:'wicket',x,y,label:prompt('Хвіртка: ЛЗ/ЛВ/ПЗ/ПВ','ЛЗ')||'ЛЗ'});
+      if (tl === 'l') ptsL.push({x, y});
+      else if (tl === 'g') mks.push({t: 'g', x, y, l: prompt('Ворота: Л або П', 'Л') || 'Л'});
+      else if (tl === 'w') mks.push({t: 'w', x, y, l: prompt('Хвіртка: ЛЗ / ЛВ / ПЗ / ПВ', 'ЛЗ') || 'ЛЗ'});
       draw();
     };
 
-    function collect() {
-      const data = {
+    function col() {
+      const d = {
         date: new Date().toLocaleString('uk-UA'),
-        manager: document.getElementById('manager').value,
-        client: {
-          name: document.getElementById('client-name').value,
-          address: document.getElementById('client-address').value
-        },
-        notes: document.getElementById('notes').value,
-        measurements: {}
+        manager: document.getElementById('mg').value,
+        client: { name: document.getElementById('cn').value, address: document.getElementById('ca').value },
+        notes: document.getElementById('nt').value,
+        m: {}
       };
-      const grab = sel => {
+      const g = id => {
         const o = {};
-        document.querySelectorAll(sel).forEach(el => { if(el.value) o[el.dataset.field]=el.value; });
+        document.querySelectorAll(id + ' [data-f]').forEach(el => { if (el.value) o[el.dataset.f] = el.value; });
         return Object.keys(o).length ? o : null;
       };
-      const g = grab('#tab-garage [data-field]'); if(g) data.measurements.garage = g;
-      const i = grab('#tab-industrial [data-field]'); if(i) data.measurements.industrial = i;
-      const f = grab('#tab-fence [data-field]') || {};
-      if(points.length || markers.length) { f.points = points; f.markers = markers; }
-      if(Object.keys(f).length) data.measurements.fence = f;
+      const gg = g('#p-g'); if (gg) d.m.garage = gg;
+      const ii = g('#p-i'); if (ii) d.m.ind = ii;
+      const ff = g('#p-f') || {};
+      if (ptsL.length || mks.length) { ff.pts = ptsL; ff.mks = mks; }
+      if (Object.keys(ff).length) d.m.fence = ff;
       const doors = [];
-      document.querySelectorAll('#doors-list .door-block').forEach(b => {
-        const d = {};
-        b.querySelectorAll('[data-field]').forEach(el => { if(el.value) d[el.dataset.field]=el.value; });
-        if(Object.keys(d).length) doors.push(d);
+      document.querySelectorAll('#dl .door').forEach(b => {
+        const o = {};
+        b.querySelectorAll('[data-f]').forEach(el => { if (el.value) o[el.dataset.f] = el.value; });
+        if (Object.keys(o).length) doors.push(o);
       });
-      if(doors.length) data.measurements.doors = doors;
-      return data;
+      if (doors.length) d.m.doors = doors;
+      return d;
     }
 
-    async function generatePDF(data) {
+    async function mkPDF(data) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       let y = 15;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.text('Бланк замірів WIŚNIOWSKI', 105, y, { align: 'center' });
-      y += 10;
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Дата: ${data.date}`, 15, y); y += 6;
-      doc.text(`Замірщик: ${data.manager || '—'}`, 15, y); y += 6;
-      doc.text(`Замовник: ${data.client.name || '—'}`, 15, y); y += 6;
-      doc.text(`Адреса: ${data.client.address || '—'}`, 15, y); y += 10;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+      doc.text('Бланк замірів WIŚNIOWSKI', 105, y, { align: 'center' }); y += 9;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+      doc.text(`Дата: ${data.date}`, 15, y); y += 5;
+      doc.text(`Замірщик: ${data.manager || '—'}`, 15, y); y += 5;
+      doc.text(`Замовник: ${data.client.name || '—'}`, 15, y); y += 5;
+      doc.text(`Адреса: ${data.client.address || '—'}`, 15, y); y += 8;
 
-      const addSection = (title, obj) => {
-        if (!obj) return;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.text(title, 15, y); y += 7;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        Object.entries(obj).forEach(([k,v]) => {
-          if (k === 'points' || k === 'markers') return;
-          doc.text(`${k}: ${v}`, 20, y); y += 6;
-          if (y > 270) { doc.addPage(); y = 15; }
+      const sec = (t, o) => {
+        if (!o) return;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+        doc.text(t, 15, y); y += 6;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        Object.entries(o).forEach(([k, v]) => {
+          if (k === 'pts' || k === 'mks') return;
+          doc.text(`${k}: ${v}`, 20, y); y += 5;
+          if (y > 275) { doc.addPage(); y = 15; }
         });
-        y += 4;
+        y += 3;
       };
-
-      addSection('Гаражні ворота', data.measurements.garage);
-      addSection('Промислові ворота', data.measurements.industrial);
-
-      if (data.measurements.fence) {
-        addSection('Огородження', data.measurements.fence);
-        if (points.length || markers.length) {
-          const img = canvas.toDataURL('image/png');
-          if (y > 180) { doc.addPage(); y = 15; }
-          doc.addImage(img, 'PNG', 15, y, 80, 65);
-          y += 70;
+      sec('Гаражні ворота', data.m.garage);
+      sec('Промислові ворота', data.m.ind);
+      if (data.m.fence) {
+        sec('Огородження', data.m.fence);
+        if (ptsL.length || mks.length) {
+          if (y > 190) { doc.addPage(); y = 15; }
+          doc.addImage(cv.toDataURL('image/png'), 'PNG', 15, y, 75, 60);
+          y += 65;
         }
       }
-
-      if (data.measurements.doors) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.text('Двері', 15, y); y += 7;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        data.measurements.doors.forEach((d, idx) => {
-          doc.text(`Двері ${idx+1}:`, 20, y); y += 6;
-          Object.entries(d).forEach(([k,v]) => {
-            doc.text(`  ${k}: ${v}`, 25, y); y += 5;
-            if (y > 270) { doc.addPage(); y = 15; }
-          });
-          y += 3;
+      if (data.m.doors) {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+        doc.text('Двері', 15, y); y += 6;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        data.m.doors.forEach((dd, i) => {
+          doc.text(`Двері ${i + 1}:`, 20, y); y += 5;
+          Object.entries(dd).forEach(([k, v]) => { doc.text(`  ${k}: ${v}`, 25, y); y += 4.5; if (y > 275) { doc.addPage(); y = 15; } });
+          y += 2;
         });
       }
-
       if (data.notes) {
-        if (y > 250) { doc.addPage(); y = 15; }
-        doc.setFont('helvetica', 'bold');
-        doc.text('Примітки:', 15, y); y += 6;
+        if (y > 255) { doc.addPage(); y = 15; }
+        doc.setFont('helvetica', 'bold'); doc.text('Примітки:', 15, y); y += 5;
         doc.setFont('helvetica', 'normal');
-        const lines = doc.splitTextToSize(data.notes, 170);
-        doc.text(lines, 15, y);
+        doc.text(doc.splitTextToSize(data.notes, 170), 15, y);
       }
-
       return doc.output('blob');
     }
 
-    async function buildZip() {
-      const data = collect();
-      const zip = new JSZip();
-      const pdfBlob = await generatePDF(data);
-      zip.file('бланк_замірів.pdf', pdfBlob);
+    async function zip() {
+      const data = col();
+      const z = new JSZip();
+      z.file('бланк.pdf', await mkPDF(data));
       let n = 1;
-      for (const [id, p] of Object.entries(photos)) {
-        if (p.blob) {
-          const ext = (p.name.split('.').pop() || 'jpg').toLowerCase();
-          zip.file(`фото_${n}_${id}.${ext}`, p.blob);
-          n++;
-        }
+      for (const [k, v] of Object.entries(ph)) {
+        if (v.b) z.file(`фото_${n}_${k}.${(v.n.split('.').pop() || 'jpg').toLowerCase()}`, v.b);
+        n++;
       }
-      const blob = await zip.generateAsync({ type: 'blob' });
-      return { blob, filename: `zamir_${Date.now()}.zip`, data };
+      return { b: await z.generateAsync({ type: 'blob' }), n: `zamir_${Date.now()}.zip`, d: data };
     }
 
-    async function shareArchive() {
-      const status = document.getElementById('status');
-      status.textContent = 'Генеруємо PDF...';
+    async function share() {
+      document.getElementById('st').textContent = 'Генеруємо PDF...';
       try {
-        const { blob, filename, data } = await buildZip();
-        const file = new File([blob], filename, { type: 'application/zip' });
-        const text = `Замір WIŚNIOWSKI\n${data.manager}\n${data.client.address}`;
-        if (navigator.share && navigator.canShare?.({ files: [file] })) {
-          await navigator.share({ title: 'Замір WIŚNIOWSKI', text, files: [file] });
-          status.textContent = 'Надіслано';
-        } else {
-          downloadBlob(blob, filename);
-          status.textContent = 'ZIP завантажено';
-        }
-      } catch (e) { status.textContent = 'Помилка: ' + e.message; }
+        const { b, n, d } = await zip();
+        const f = new File([b], n, { type: 'application/zip' });
+        if (navigator.share && navigator.canShare?.({ files: [f] })) {
+          await navigator.share({ title: 'Замір WIŚNIOWSKI', text: `${d.manager} — ${d.client.address}`, files: [f] });
+          document.getElementById('st').textContent = 'Надіслано';
+        } else { down(b, n); document.getElementById('st').textContent = 'ZIP завантажено'; }
+      } catch (e) { document.getElementById('st').textContent = 'Помилка: ' + e.message; }
     }
-
-    async function downloadArchive() {
-      const status = document.getElementById('status');
-      status.textContent = 'Генеруємо PDF...';
-      try {
-        const { blob, filename } = await buildZip();
-        downloadBlob(blob, filename);
-        status.textContent = 'ZIP завантажено';
-      } catch (e) { status.textContent = 'Помилка: ' + e.message; }
+    async function dl() {
+      document.getElementById('st').textContent = 'Генеруємо PDF...';
+      try { const { b, n } = await zip(); down(b, n); document.getElementById('st').textContent = 'ZIP завантажено'; }
+      catch (e) { document.getElementById('st').textContent = 'Помилка: ' + e.message; }
     }
-
-    function downloadBlob(blob, name) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = name;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+    function down(b, n) { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = n; a.click(); URL.revokeObjectURL(a.href); }
   </script>
 </body>
 </html>
