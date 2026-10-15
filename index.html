@@ -22,12 +22,9 @@
     .tab.on { border-color: var(--a); background: #ebf8ff; font-weight: 700; }
     .pane { display: none; }
     .pane.on { display: block; }
-    .diag { background: #f8fafc; border: 1px solid var(--bd); border-radius: 8px; padding: 12px; margin: 8px 0; }
+    .diag { background: #f8fafc; border: 1px solid var(--bd); border-radius: 8px; padding: 8px; margin: 8px 0; position: relative; }
     .diag svg { width: 100%; height: auto; display: block; }
-    .meas-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
-    .meas-row label { margin: 0; min-width: 70px; font-size: .8rem; }
-    .meas-row input { flex: 1; }
-    .arrow { font-size: 1.1rem; color: var(--a); min-width: 24px; text-align: center; }
+    .ov { position: absolute; width: 62px; font-size: .7rem; padding: 3px; text-align: center; border: 1px solid #3182ce; border-radius: 4px; background: #fff; }
     .grid { border: 1px solid var(--bd); border-radius: 6px; background: #e2e8f0; cursor: crosshair; display: block; margin: 8px auto; }
     .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
     .tools button { padding: 7px 10px; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; font-size: .8rem; }
@@ -71,49 +68,49 @@
       </div>
 
       <div class="pane on" id="p-g">
-        <div class="diag">
-          <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg">
-            <rect x="80" y="50" width="180" height="120" fill="#ffffff" stroke="#1e3a5f" stroke-width="3"/>
-            <text x="170" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e3a5f">Проріз</text>
-            <line x1="80" y1="35" x2="260" y2="35" stroke="#3182ce" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr-start)"/>
-            <text x="170" y="28" text-anchor="middle" font-size="11" fill="#3182ce" font-weight="bold">So — ширина прорізу</text>
-            <line x1="50" y1="50" x2="50" y2="170" stroke="#3182ce" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr-start)"/>
-            <text x="30" y="115" text-anchor="middle" font-size="11" fill="#3182ce" font-weight="bold" transform="rotate(-90 30 115)">Ho — висота</text>
-            <line x1="80" y1="20" x2="260" y2="20" stroke="#38a169" stroke-width="1.5" marker-end="url(#arrg)"/>
-            <text x="170" y="14" text-anchor="middle" font-size="10" fill="#38a169">N — перемичка</text>
-            <line x1="20" y1="50" x2="20" y2="170" stroke="#dd6b20" stroke-width="1.5" marker-end="url(#arro)"/>
-            <text x="8" y="115" text-anchor="middle" font-size="10" fill="#dd6b20" transform="rotate(-90 8 115)">W1 — ліворуч</text>
-            <line x1="320" y1="50" x2="320" y2="170" stroke="#dd6b20" stroke-width="1.5" marker-end="url(#arro)"/>
-            <text x="332" y="115" text-anchor="middle" font-size="10" fill="#dd6b20" transform="rotate(90 332 115)">W2 — праворуч</text>
-            <line x1="80" y1="195" x2="260" y2="195" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
-            <text x="170" y="210" text-anchor="middle" font-size="10" fill="#3182ce">Eo — заглиблення</text>
-            <defs>
-              <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#3182ce"/></marker>
-              <marker id="arr-start" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto"><path d="M7,0 L0,3.5 L7,7 Z" fill="#3182ce"/></marker>
-              <marker id="arrg" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#38a169"/></marker>
-              <marker id="arro" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dd6b20"/></marker>
-            </defs>
+        <div class="diag" id="dg">
+          <svg viewBox="0 0 360 260">
+            <polygon points="60,40 300,40 300,200 60,200" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2"/>
+            <rect x="100" y="80" width="160" height="100" fill="#ffffff" stroke="#1e3a5f" stroke-width="2.5"/>
+            <text x="180" y="135" text-anchor="middle" font-size="13" fill="#1e3a5f" font-weight="bold">Проріз</text>
+            <text x="180" y="30" text-anchor="middle" font-size="11" fill="#1e3a5f">N</text>
+            <text x="45" y="135" text-anchor="middle" font-size="11" fill="#1e3a5f">W1</text>
+            <text x="315" y="135" text-anchor="middle" font-size="11" fill="#1e3a5f">W2</text>
+            <text x="180" y="225" text-anchor="middle" font-size="11" fill="#1e3a5f">So</text>
+            <text x="180" y="70" text-anchor="middle" font-size="11" fill="#1e3a5f">Ho</text>
+            <text x="40" y="210" text-anchor="middle" font-size="11" fill="#1e3a5f">Eo</text>
           </svg>
+          <input class="ov" data-f="n" placeholder="N" style="top:8px; left:145px;">
+          <input class="ov" data-f="w1" placeholder="W1" style="top:105px; left:4px;">
+          <input class="ov" data-f="w2" placeholder="W2" style="top:105px; right:4px;">
+          <input class="ov" data-f="ho" placeholder="Ho" style="top:55px; left:145px;">
+          <input class="ov" data-f="so" placeholder="So" style="bottom:18px; left:145px;">
+          <input class="ov" data-f="eo" placeholder="Eo" style="bottom:28px; left:8px;">
         </div>
-        <div class="meas-row"><span class="arrow">↔</span><label>So (ширина)</label><input data-f="so" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">↕</span><label>Ho (висота)</label><input data-f="ho" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">↑</span><label>N (перемичка)</label><input data-f="n" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">←</span><label>W1 (ліворуч)</label><input data-f="w1" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>W2 (праворуч)</label><input data-f="w2" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">↓</span><label>Eo (заглиблення)</label><input data-f="eo" placeholder="мм"></div>
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
         <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
-        <div class="hint">Усі розміри в міліметрах. So і Ho — світлий проріз.</div>
+        <div class="hint">Введіть розміри безпосередньо на схемі (мм).</div>
       </div>
 
       <div class="pane" id="p-i">
-        <div class="meas-row"><span class="arrow">↔</span><label>So (ширина)</label><input type="number" data-f="so"></div>
-        <div class="meas-row"><span class="arrow">↕</span><label>Ho (висота)</label><input type="number" data-f="ho"></div>
-        <div class="meas-row"><span class="arrow">↑</span><label>N (перемичка)</label><input type="number" data-f="n"></div>
-        <div class="meas-row"><span class="arrow">←</span><label>W1 (ліворуч)</label><input type="number" data-f="w1"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>W2 (праворуч)</label><input type="number" data-f="w2"></div>
-        <div class="meas-row"><span class="arrow">↓</span><label>Eo (заглиблення)</label><input type="number" data-f="eo"></div>
+        <div class="diag">
+          <svg viewBox="0 0 360 200">
+            <rect x="80" y="40" width="200" height="120" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2"/>
+            <rect x="110" y="70" width="140" height="80" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
+            <text x="180" y="115" text-anchor="middle" font-size="12" fill="#1e3a5f">Проріз</text>
+            <text x="180" y="30" text-anchor="middle" font-size="11">N</text>
+            <text x="55" y="110" text-anchor="middle" font-size="11">W1</text>
+            <text x="305" y="110" text-anchor="middle" font-size="11">W2</text>
+            <text x="180" y="185" text-anchor="middle" font-size="11">So</text>
+          </svg>
+          <input class="ov" data-f="n" placeholder="N" style="top:6px; left:145px;">
+          <input class="ov" data-f="w1" placeholder="W1" style="top:80px; left:4px;">
+          <input class="ov" data-f="w2" placeholder="W2" style="top:80px; right:4px;">
+          <input class="ov" data-f="so" placeholder="So" style="bottom:8px; left:145px;">
+          <input class="ov" data-f="ho" placeholder="Ho" style="top:50px; left:145px;">
+          <input class="ov" data-f="eo" placeholder="Eo" style="bottom:8px; left:8px;">
+        </div>
         <label>Колір</label><input data-f="ral">
       </div>
 
@@ -139,7 +136,7 @@
           <select data-f="gate-type"><option value="">—</option><option>Розпашні</option><option>Відкатні</option></select>
           <label>Ширина прорізу (мм)</label><input type="number" data-f="gate-w">
           <label>Висота (мм)</label><input type="number" data-f="gate-h">
-          <label>Сторона відкату (для відкатних)</label>
+          <label>Сторона відкату</label>
           <select data-f="gate-side"><option value="">—</option><option>Ліва (Л)</option><option>Права (П)</option></select>
         </div>
 
