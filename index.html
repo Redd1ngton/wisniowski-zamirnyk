@@ -52,9 +52,12 @@
     .ph.ok { border-color: var(--ok); }
     .ph img { max-width: 100%; max-height: 100px; margin-top: 4px; }
     .ph-ex { font-size: .65rem; color: #718096; margin-top: 4px; text-align: left; }
+    .ph-btns { display: flex; gap: 6px; margin: 6px 0; }
+    .ph-btns button { flex: 1; padding: 8px; font-size: .8rem; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; }
     .st { text-align: center; font-size: .8rem; color: #718096; margin-top: 6px; }
     .hint { font-size: .7rem; color: #718096; margin-top: 2px; line-height: 1.3; }
     .warn-msg { font-size: .7rem; color: var(--warn); margin-top: 2px; display: none; }
+    .file-hidden { position: absolute; left: -9999px; }
   </style>
 </head>
 <body>
@@ -205,8 +208,7 @@
     </div>
 
     <div class="card">
-      <button class="btn b1" onclick="share()">Поділитися архівом (PDF)</button>
-      <button class="btn b2" onclick="dl()">Завантажити ZIP</button>
+      <button class="btn b1" onclick="share()">Поділитися / Завантажити</button>
       <div class="st" id="st"></div>
     </div>
   </div>
@@ -244,8 +246,13 @@
     ];
     document.getElementById('phs').innerHTML = pts.map(p => `
       <div class="ph" id="b${p.id}">
-        <b>${p.l}</b><br>
-        <input type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)">
+        <b>${p.l}</b>
+        <div class="ph-btns">
+          <button type="button" onclick="document.getElementById('cam${p.id}').click()">📷 Камера</button>
+          <button type="button" onclick="document.getElementById('lib${p.id}').click()">🖼️ Галерея</button>
+        </div>
+        <input class="file-hidden" id="cam${p.id}" type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)">
+        <input class="file-hidden" id="lib${p.id}" type="file" accept="image/*" data-i="${p.id}" onchange="op(this)">
         <div class="pv"></div>
         <div class="ph-ex">${photoTips[p.id]}</div>
       </div>
@@ -514,23 +521,37 @@
       return { b: await z.generateAsync({ type: 'blob' }), n: `miraW_${Date.now()}.zip`, d: data };
     }
 
+    function down(b, n) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = n;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
     async function share() {
-      document.getElementById('st').textContent = 'Генеруємо PDF...';
+      const st = document.getElementById('st');
+      st.textContent = 'Генеруємо архів...';
       try {
         const { b, n, d } = await zip();
         const f = new File([b], n, { type: 'application/zip' });
+
         if (navigator.share && navigator.canShare?.({ files: [f] })) {
-          await navigator.share({ title: 'MiraW — замір', text: `${d.manager} — ${d.client.address}`, files: [f] });
-          document.getElementById('st').textContent = 'Надіслано';
-        } else { down(b, n); document.getElementById('st').textContent = 'ZIP завантажено'; }
-      } catch (e) { document.getElementById('st').textContent = 'Помилка: ' + e.message; }
+          try {
+            await navigator.share({ files: [f], title: 'MiraW замір' });
+            st.textContent = 'Надіслано';
+            return;
+          } catch (e) {
+            if (e.name === 'AbortError') { st.textContent = 'Скасовано'; return; }
+          }
+        }
+
+        down(b, n);
+        st.textContent = 'ZIP завантажено (поділитися недоступно на цьому пристрої)';
+      } catch (e) {
+        st.textContent = 'Помилка: ' + (e.message || e);
+      }
     }
-    async function dl() {
-      document.getElementById('st').textContent = 'Генеруємо PDF...';
-      try { const { b, n } = await zip(); down(b, n); document.getElementById('st').textContent = 'ZIP завантажено'; }
-      catch (e) { document.getElementById('st').textContent = 'Помилка: ' + e.message; }
-    }
-    function down(b, n) { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = n; a.click(); URL.revokeObjectURL(a.href); }
   </script>
 </body>
 </html>
