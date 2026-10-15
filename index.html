@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    :root { --p: #1e3a5f; --a: #3182ce; --bg: #f7fafc; --bd: #e2e8f0; --ok: #38a169; }
+    :root { --p: #1e3a5f; --a: #3182ce; --bg: #f7fafc; --bd: #e2e8f0; --ok: #38a169; --warn: #dd6b20; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #1a202c; }
     header { background: var(--p); color: #fff; padding: 12px; text-align: center; position: sticky; top: 0; z-index: 50; font-weight: 700; font-size: 1.1rem; }
@@ -17,6 +17,7 @@
     h2 { font-size: 1rem; color: var(--p); border-bottom: 2px solid var(--a); padding-bottom: 5px; margin-bottom: 10px; }
     label { display: block; font-weight: 600; font-size: .85rem; margin: 8px 0 3px; }
     input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--bd); border-radius: 6px; font-size: 1rem; }
+    input.warn { border-color: var(--warn); background: #fffbeb; }
     .tabs { display: flex; gap: 4px; overflow-x: auto; margin-bottom: 10px; }
     .tab { flex: 1; min-width: 90px; padding: 8px 4px; border: 2px solid var(--bd); border-radius: 8px; text-align: center; font-size: .75rem; cursor: pointer; background: #fff; }
     .tab.on { border-color: var(--a); background: #ebf8ff; font-weight: 700; }
@@ -30,6 +31,7 @@
     .ov.ho { border: 2px solid #ef4444; }
     .ov.so { border: 2px solid #3b82f6; }
     .ov.eo { border: 2px solid #8b5cf6; }
+    .ov.warn { border-color: var(--warn) !important; background: #fffbeb; }
     .grid { border: 1px solid var(--bd); border-radius: 6px; background: #e2e8f0; cursor: crosshair; display: block; margin: 8px auto; }
     .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
     .tools button { padding: 7px 10px; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; font-size: .8rem; }
@@ -49,8 +51,10 @@
     .ph { border: 2px dashed var(--bd); border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 6px; }
     .ph.ok { border-color: var(--ok); }
     .ph img { max-width: 100%; max-height: 100px; margin-top: 4px; }
+    .ph-ex { font-size: .65rem; color: #718096; margin-top: 4px; text-align: left; }
     .st { text-align: center; font-size: .8rem; color: #718096; margin-top: 6px; }
-    .hint { font-size: .7rem; color: #718096; margin-top: 2px; }
+    .hint { font-size: .7rem; color: #718096; margin-top: 2px; line-height: 1.3; }
+    .warn-msg { font-size: .7rem; color: var(--warn); margin-top: 2px; display: none; }
   </style>
 </head>
 <body>
@@ -100,17 +104,18 @@
               <marker id="arrB-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#3b82f6"/></marker>
             </defs>
           </svg>
-          <input class="ov n" data-f="n" placeholder="N" style="top:2px; left:160px;">
-          <input class="ov w" data-f="w1" placeholder="W1" style="top:110px; left:2px;">
-          <input class="ov w" data-f="w2" placeholder="W2" style="top:110px; right:2px;">
-          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:48px; left:160px;">
-          <input class="ov so" data-f="so" placeholder="So" style="bottom:8px; left:160px;">
-          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:28px; left:6px;">
+          <input class="ov n" data-f="n" placeholder="N" style="top:2px; left:160px;" oninput="val(this)">
+          <input class="ov w" data-f="w1" placeholder="W1" style="top:110px; left:2px;" oninput="val(this)">
+          <input class="ov w" data-f="w2" placeholder="W2" style="top:110px; right:2px;" oninput="val(this)">
+          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:48px; left:160px;" oninput="val(this)">
+          <input class="ov so" data-f="so" placeholder="So" style="bottom:8px; left:160px;" oninput="val(this)">
+          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:28px; left:6px;" oninput="val(this)">
         </div>
+        <div class="hint">So — ширина світлого прорізу (від стіни до стіни). Ho — висота світлого прорізу. N — висота перемички від верху прорізу до стелі. W1/W2 — відступ від краю прорізу до бокової стіни. Eo — заглиблення від фасаду.</div>
+        <div class="warn-msg" id="w-g">Перевірте розмір: значення виглядає нетиповим (зазвичай 1500–6000 мм)</div>
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
         <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
-        <div class="hint">Кольори стрілок відповідають кольорам полів. Розміри в мм.</div>
       </div>
 
       <div class="pane" id="p-i">
@@ -130,13 +135,15 @@
             <line x1="110" y1="190" x2="270" y2="190" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
             <text x="190" y="208" text-anchor="middle" font-size="10" fill="#3b82f6">So</text>
           </svg>
-          <input class="ov n" data-f="n" placeholder="N" style="top:0; left:160px;">
-          <input class="ov w" data-f="w1" placeholder="W1" style="top:85px; left:2px;">
-          <input class="ov w" data-f="w2" placeholder="W2" style="top:85px; right:2px;">
-          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:40px; left:160px;">
-          <input class="ov so" data-f="so" placeholder="So" style="bottom:4px; left:160px;">
-          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:4px; left:6px;">
+          <input class="ov n" data-f="n" placeholder="N" style="top:0; left:160px;" oninput="val(this)">
+          <input class="ov w" data-f="w1" placeholder="W1" style="top:85px; left:2px;" oninput="val(this)">
+          <input class="ov w" data-f="w2" placeholder="W2" style="top:85px; right:2px;" oninput="val(this)">
+          <input class="ov ho" data-f="ho" placeholder="Ho" style="top:40px; left:160px;" oninput="val(this)">
+          <input class="ov so" data-f="so" placeholder="So" style="bottom:4px; left:160px;" oninput="val(this)">
+          <input class="ov eo" data-f="eo" placeholder="Eo" style="bottom:4px; left:6px;" oninput="val(this)">
         </div>
+        <div class="hint">Ті самі правила, що й для гаражних: So/Ho — світлий проріз, N — перемичка, W1/W2 — бічні відступи.</div>
+        <div class="warn-msg" id="w-i">Перевірте розмір: значення виглядає нетиповим</div>
         <label>Колір</label><input data-f="ral">
       </div>
 
@@ -153,21 +160,24 @@
             <input type="number" id="sec-h" placeholder="Висота (мм)" style="flex:1">
             <button type="button" onclick="addSec()" style="padding:10px 12px; background:var(--a); color:#fff; border:none; border-radius:6px; cursor:pointer; white-space:nowrap;">+ Проліт</button>
           </div>
-          <div class="hint">Додавайте кожен проліт між стовпами окремо.</div>
+          <div class="hint">Кожен проліт між стовпами додавайте окремо. Ширина — відстань між стовпами, висота — від землі до верху.</div>
         </div>
         <div class="subpane" id="s-gate">
           <label>Тип воріт</label>
           <select data-f="gate-type"><option value="">—</option><option>Розпашні</option><option>Відкатні</option></select>
           <label>Ширина прорізу (мм)</label><input type="number" data-f="gate-w">
+          <div class="hint">Світла ширина проїзду</div>
           <label>Висота (мм)</label><input type="number" data-f="gate-h">
           <label>Сторона відкату</label>
           <select data-f="gate-side"><option value="">—</option><option>Ліва (Л)</option><option>Права (П)</option></select>
+          <div class="hint">Для відкатних: з якої сторони від'їжджає полотно (якщо дивитися з вулиці)</div>
         </div>
         <div class="subpane" id="s-wick">
           <label>Ширина (мм)</label><input type="number" data-f="wick-w">
           <label>Висота (мм)</label><input type="number" data-f="wick-h">
           <label>Напрямок відкриття</label>
           <select data-f="wick-dir"><option value="">—</option><option>ЛЗ — ліва зовні</option><option>ЛВ — ліва всередину</option><option>ПЗ — права зовні</option><option>ПВ — права всередину</option></select>
+          <div class="hint">ЛЗ = ліва петля, відкривається назовні. ПВ = права петля, відкривається всередину.</div>
         </div>
         <label style="margin-top:12px">Загальна довжина огорожі (м)</label><input type="number" data-f="len" step="0.1">
         <label>Колір RAL</label><input data-f="ral">
@@ -178,7 +188,7 @@
           <button id="tc">Очистити</button>
         </div>
         <canvas id="cv" class="grid" width="300" height="220"></canvas>
-        <div class="hint">Намалюйте контур ділянки. Ворота і хвіртку поставте схематично.</div>
+        <div class="hint">Додатково: намалюйте контур ділянки пальцем. Ворота/хвіртку ставте схематично.</div>
       </div>
 
       <div class="pane" id="p-d">
@@ -216,8 +226,30 @@
       document.getElementById('s-' + s.dataset.s).classList.add('on');
     });
 
-    const pts = [{id:'f',l:'Фасад / загальний вигляд'},{id:'in',l:'Зсередини'},{id:'li',l:'Перемичка'},{id:'s',l:'Бічні відступи'},{id:'fl',l:'Підлога'},{id:'e',l:'Додатково'}];
-    document.getElementById('phs').innerHTML = pts.map(p => `<div class="ph" id="b${p.id}"><b>${p.l}</b><br><input type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)"><div class="pv"></div></div>`).join('');
+    const photoTips = {
+      f: 'Загальний вигляд фасаду з воротами/прорізом. Знімайте з вулиці, щоб було видно весь проріз.',
+      in: 'Вид зсередини гаража/приміщення на проріз. Показує перемичку і бічні стіни.',
+      li: 'Крупно перемичку (місце над прорізом). Важливо бачити висоту N і стан стелі.',
+      s: 'Бічні відступи W1 і W2. Зніміть ліву і праву сторону прорізу.',
+      fl: 'Підлога біля прорізу. Показує нерівності, ухил, покриття.',
+      e: 'Будь-які додаткові моменти: комунікації, труби, нерівності стін.'
+    };
+    const pts = [
+      {id:'f',l:'Фасад / загальний вигляд'},
+      {id:'in',l:'Зсередини'},
+      {id:'li',l:'Перемичка'},
+      {id:'s',l:'Бічні відступи'},
+      {id:'fl',l:'Підлога'},
+      {id:'e',l:'Додатково'}
+    ];
+    document.getElementById('phs').innerHTML = pts.map(p => `
+      <div class="ph" id="b${p.id}">
+        <b>${p.l}</b><br>
+        <input type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)">
+        <div class="pv"></div>
+        <div class="ph-ex">${photoTips[p.id]}</div>
+      </div>
+    `).join('');
     let ph = {};
     function op(el) {
       const f = el.files[0]; if (!f) return;
@@ -229,6 +261,15 @@
         b.querySelector('.pv').innerHTML = `<img src="${e.target.result}">`;
       };
       r.readAsDataURL(f);
+    }
+
+    function val(el) {
+      const v = parseInt(el.value, 10);
+      const bad = v && (v < 800 || v > 9000);
+      el.classList.toggle('warn', bad);
+      const pane = el.closest('.pane');
+      const msg = pane && pane.querySelector('.warn-msg');
+      if (msg) msg.style.display = bad ? 'block' : 'none';
     }
 
     let secs = [];
@@ -261,8 +302,10 @@
           <div><label>Ширина (мм)</label><input type="number" data-f="w"></div>
           <div><label>Висота (мм)</label><input type="number" data-f="h"></div>
         </div>
+        <div class="hint">Ширина і висота світлого прорізу під двері</div>
         <label>Напрямок відкриття</label>
         <select data-f="dir"><option value="">—</option><option>PZ — права зовні</option><option>PW — права всередину</option><option>LZ — ліва зовні</option><option>LW — ліва всередину</option></select>
+        <div class="hint">PZ = права петля, відкривається назовні. LW = ліва петля, відкривається всередину.</div>
         <label>Коробка / стіна</label><input data-f="fr">
         <label>Колір / декор</label><input data-f="c">
         <label>Фурнітура</label><input data-f="hw">`;
