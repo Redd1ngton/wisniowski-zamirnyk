@@ -416,6 +416,40 @@
       return d;
     }
 
+    function gateSVG(obj) {
+      if (!obj) return '';
+      const v = (k) => obj[k] || '—';
+      return `
+        <div style="max-width:420px;margin:12px 0;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px;">
+          <svg viewBox="0 0 380 280" style="width:100%;height:auto;display:block;">
+            <rect x="70" y="50" width="240" height="160" fill="#e2e8f0" stroke="#1e3a5f" stroke-width="2.5"/>
+            <rect x="110" y="90" width="160" height="90" fill="#ffffff" stroke="#1e3a5f" stroke-width="2"/>
+            <text x="190" y="140" text-anchor="middle" font-size="13" fill="#1e3a5f" font-weight="bold">Проріз</text>
+            <line x1="190" y1="28" x2="190" y2="48" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arrG)" marker-start="url(#arrG-s)"/>
+            <text x="190" y="18" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="bold">N: ${v('n')}</text>
+            <line x1="20" y1="135" x2="65" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="42" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W1: ${v('w1')}</text>
+            <line x1="315" y1="135" x2="360" y2="135" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrO)" marker-start="url(#arrO-s)"/>
+            <text x="338" y="125" text-anchor="middle" font-size="11" fill="#f97316" font-weight="bold">W2: ${v('w2')}</text>
+            <line x1="280" y1="90" x2="280" y2="180" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrR)" marker-start="url(#arrR-s)"/>
+            <text x="295" y="140" text-anchor="middle" font-size="11" fill="#ef4444" font-weight="bold">Ho: ${v('ho')}</text>
+            <line x1="110" y1="230" x2="270" y2="230" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrB)" marker-start="url(#arrB-s)"/>
+            <text x="190" y="248" text-anchor="middle" font-size="11" fill="#3b82f6" font-weight="bold">So: ${v('so')}</text>
+            <text x="40" y="210" text-anchor="middle" font-size="11" fill="#8b5cf6" font-weight="bold">Eo: ${v('eo')}</text>
+            <defs>
+              <marker id="arrG" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#22c55e"/></marker>
+              <marker id="arrG-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#22c55e"/></marker>
+              <marker id="arrO" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f97316"/></marker>
+              <marker id="arrO-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#f97316"/></marker>
+              <marker id="arrR" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ef4444"/></marker>
+              <marker id="arrR-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#ef4444"/></marker>
+              <marker id="arrB" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3b82f6"/></marker>
+              <marker id="arrB-s" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="#3b82f6"/></marker>
+            </defs>
+          </svg>
+        </div>`;
+    }
+
     function mkHTML(data) {
       const labelMap = {
         so: 'So — ширина прорізу',
@@ -490,8 +524,8 @@
   <div><b>Адреса:</b> ${data.client.address || '—'}</div>
 </div>
 
-${data.m.garage ? `<h2>Гаражні ворота</h2><table>${rows(data.m.garage)}</table>` : ''}
-${data.m.ind ? `<h2>Промислові ворота</h2><table>${rows(data.m.ind)}</table>` : ''}
+${data.m.garage ? `<h2>Гаражні ворота</h2>${gateSVG(data.m.garage)}<table>${rows(data.m.garage)}</table>` : ''}
+${data.m.ind ? `<h2>Промислові ворота</h2>${gateSVG(data.m.ind)}<table>${rows(data.m.ind)}</table>` : ''}
 ${data.m.fence ? `<h2>Огородження</h2><table>${rows(data.m.fence, ['pts','mks','sections'])}${sectionsHtml}</table>${schemaImg}` : ''}
 ${doorsHtml ? `<h2>Двері</h2>${doorsHtml}` : ''}
 ${data.notes ? `<h2>Примітки</h2><div class="notes">${data.notes.replace(/</g,'<')}</div>` : ''}
