@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Замірник WIŚNIOWSKI</title>
-  <meta name="theme-color" content="#c41e3a">
+  <meta name="theme-color" content="#1e3a5f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Замірник">
@@ -12,15 +12,16 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     :root {
-      --primary: #c41e3a;
-      --primary-dark: #9a162e;
-      --bg: #f5f5f5;
+      --primary: #1e3a5f;
+      --primary-light: #2c5282;
+      --accent: #3182ce;
+      --bg: #f7fafc;
       --card: #ffffff;
-      --text: #1a1a1a;
-      --muted: #666;
-      --border: #e0e0e0;
-      --success: #2e7d32;
-      --warning: #f57c00;
+      --text: #1a202c;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --success: #38a169;
+      --warning: #dd6b20;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -29,65 +30,74 @@
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
-      padding-bottom: env(safe-area-inset-bottom);
     }
     header {
       background: var(--primary);
       color: white;
-      padding: 16px 20px;
+      padding: 14px 16px;
       text-align: center;
       position: sticky;
       top: 0;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    header h1 { font-size: 1.25rem; font-weight: 600; }
-    header p { font-size: 0.85rem; opacity: 0.9; margin-top: 2px; }
-    .container { max-width: 480px; margin: 0 auto; padding: 16px; }
-    .card {
+    header h1 { font-size: 1.2rem; font-weight: 600; }
+    .container { max-width: 520px; margin: 0 auto; padding: 12px 16px 40px; }
+    section {
       background: var(--card);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .step-indicator {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      font-size: 0.75rem;
-      color: var(--muted);
+    h2 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px;
     }
-    .step-indicator .active { color: var(--primary); font-weight: 600; }
-    h2 { font-size: 1.1rem; margin-bottom: 12px; color: var(--primary); }
-    label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 0.9rem; }
-    .hint {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 2px;
-      margin-bottom: 8px;
-      line-height: 1.35;
-    }
-    input[type="text"], input[type="number"], input[type="tel"], input[type="email"],
-    select, textarea {
+    label { display: block; font-weight: 500; margin: 10px 0 4px; font-size: 0.9rem; }
+    .hint { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; line-height: 1.35; }
+    input, select, textarea {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 1rem;
-      margin-bottom: 12px;
       background: #fff;
     }
-    textarea { min-height: 80px; resize: vertical; }
-    .checkbox-group, .radio-group { margin-bottom: 12px; }
-    .checkbox-group label, .radio-group label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: normal;
-      margin-bottom: 8px;
+    textarea { min-height: 70px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .type-select { display: grid; gap: 8px; margin-bottom: 8px; }
+    .type-btn {
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      text-align: left;
       cursor: pointer;
+      font-size: 0.95rem;
     }
+    .type-btn.active { border-color: var(--accent); background: #ebf8ff; }
+    .diagram {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+      text-align: center;
+      overflow: hidden;
+    }
+    .diagram svg { max-width: 100%; height: auto; }
+    .photo-grid { display: grid; gap: 10px; }
+    .photo-box {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .photo-box.has { border-color: var(--success); border-style: solid; }
+    .photo-box img { max-width: 100%; max-height: 140px; border-radius: 6px; margin-top: 6px; }
     .btn {
       display: block;
       width: 100%;
@@ -97,257 +107,172 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:active { background: var(--primary-dark); }
-    .btn-secondary { background: #eee; color: var(--text); }
     .btn-success { background: var(--success); color: white; }
-    .photo-item {
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-    .photo-item.has-photo { border-color: var(--success); border-style: solid; }
-    .photo-item img { max-width: 100%; max-height: 150px; border-radius: 6px; margin-top: 8px; }
-    .photo-item input[type="file"] { margin-top: 8px; }
-    .type-cards { display: grid; gap: 12px; }
-    .type-card {
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      cursor: pointer;
-      text-align: center;
-      transition: border-color 0.2s;
-    }
-    .type-card:hover, .type-card.selected { border-color: var(--primary); background: #fff5f5; }
-    .type-card h3 { margin-bottom: 4px; }
-    .hidden { display: none !important; }
-    .summary-section { margin-bottom: 16px; }
-    .summary-section h3 { font-size: 1rem; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-    .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
-    .summary-row span:first-child { color: var(--muted); }
-    .warning { background: #fff3e0; border-left: 4px solid var(--warning); padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; }
-    footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.75rem; }
+    .warning { background: #fffaf0; border-left: 4px solid var(--warning); padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 0.85rem; }
+    footer { text-align: center; padding: 16px; color: var(--muted); font-size: 0.75rem; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <header>
     <h1>Замірник WIŚNIOWSKI</h1>
-    <p>Асистент для менеджерів</p>
   </header>
 
   <div class="container">
-    <!-- Step 0: Type selection -->
-    <div id="step-type" class="card">
-      <div class="step-indicator">
-        <span class="active">1. Тип</span>
-        <span>2. Замовник</span>
-        <span>3. Заміри</span>
-        <span>4. Фото</span>
-        <span>5. Підсумок</span>
+    <section>
+      <h2>Тип об'єкта</h2>
+      <div class="type-select" id="type-select">
+        <button type="button" class="type-btn" data-type="unipro">Гаражні ворота UniPro / UniTherm / PRIME</button>
+        <button type="button" class="type-btn" data-type="makro">MakroPro / Invest / Alu</button>
+        <button type="button" class="type-btn" data-type="fence">Огорожа + брами / хвіртка</button>
+        <button type="button" class="type-btn" data-type="door">Двері (CREO, Deco, профільні тощо)</button>
       </div>
-      <h2>Оберіть тип продукту</h2>
-      <div class="type-cards">
-        <div class="type-card" data-type="unipro">
-          <h3>Гаражні ворота UniPro / UniTherm / PRIME</h3>
-          <p>Секційні ворота для гаража</p>
-        </div>
-        <div class="type-card" data-type="makro">
-          <h3>Гаражні ворота MakroPro / Invest / Alu</h3>
-          <p>Промислові та алюмінієві</p>
-        </div>
-        <div class="type-card" data-type="fence">
-          <h3>Системи огорожі + брами</h3>
-          <p>Розпашні, відкатні, хвіртки, секції</p>
-        </div>
-        <div class="type-card" data-type="door">
-          <h3>Двері</h3>
-          <p>CREO, Deco, профільні, ECO, вогнестійкі</p>
-        </div>
-      </div>
-      <button class="btn btn-primary" id="btn-next-type" disabled>Далі</button>
-    </div>
+    </section>
 
-    <!-- Step 1: Client -->
-    <div id="step-client" class="card hidden">
-      <div class="step-indicator">
-        <span>1. Тип</span>
-        <span class="active">2. Замовник</span>
-        <span>3. Заміри</span>
-        <span>4. Фото</span>
-        <span>5. Підсумок</span>
-      </div>
-      <h2>Дані замовника та об'єкта</h2>
-      <label>Замовник (ПІБ / компанія)</label>
-      <input type="text" id="client-name" placeholder="Іван Іваненко">
+    <section>
+      <h2>Основні дані</h2>
+      <label>Ім'я / контакт замовника</label>
+      <input type="text" id="client-name" placeholder="ПІБ або компанія + телефон">
       <label>Адреса об'єкта</label>
-      <input type="text" id="client-address" placeholder="вул. Шевченка, 10, Львів">
-      <label>Телефон</label>
-      <input type="tel" id="client-phone" placeholder="+380...">
-      <label>Будівельний проєкт / примітки</label>
-      <textarea id="client-notes" placeholder="Додаткова інформація про об'єкт"></textarea>
-      <label>Контактна особа на об'єкті</label>
-      <input type="text" id="contact-person" placeholder="Ім'я та телефон">
-      <div class="warning">
-        Заповніть максимально повно — монтажний спеціаліст буде перевіряти ці дані.
-      </div>
-      <button class="btn btn-secondary" onclick="goToStep('type')">Назад</button>
-      <button class="btn btn-primary" onclick="goToStep('measurements')">Далі до замірів</button>
-    </div>
+      <input type="text" id="client-address" placeholder="Місто, вулиця, номер">
+      <label>Менеджер / хто робить замір</label>
+      <input type="text" id="manager" placeholder="Ваше ім'я">
+    </section>
 
-    <!-- Step 2: Measurements (dynamic) -->
-    <div id="step-measurements" class="card hidden">
-      <div class="step-indicator">
-        <span>1. Тип</span>
-        <span>2. Замовник</span>
-        <span class="active">3. Заміри</span>
-        <span>4. Фото</span>
-        <span>5. Підсумок</span>
-      </div>
-      <h2 id="meas-title">Технічні заміри</h2>
-      <div id="meas-content"></div>
-      <button class="btn btn-secondary" onclick="goToStep('client')">Назад</button>
-      <button class="btn btn-primary" onclick="goToStep('photos')">Далі до фото</button>
-    </div>
+    <section id="meas-section" class="hidden">
+      <h2 id="meas-title">Заміри об'єкта</h2>
+      <div id="diagram" class="diagram"></div>
+      <div id="meas-fields"></div>
+      <div class="warning" id="meas-warning"></div>
+    </section>
 
-    <!-- Step 3: Photos -->
-    <div id="step-photos" class="card hidden">
-      <div class="step-indicator">
-        <span>1. Тип</span>
-        <span>2. Замовник</span>
-        <span>3. Заміри</span>
-        <span class="active">4. Фото</span>
-        <span>5. Підсумок</span>
-      </div>
+    <section>
       <h2>Фото об'єкта</h2>
-      <p class="hint">Обов’язкові фото допомагають монтажному спеціалісту правильно оцінити умови монтажу. Знімайте чітко і з різних ракурсів.</p>
-      <div id="photos-content"></div>
-      <button class="btn btn-secondary" onclick="goToStep('measurements')">Назад</button>
-      <button class="btn btn-primary" onclick="goToStep('summary')">Далі до підсумку</button>
-    </div>
+      <p class="hint">Знімайте чітко. Це допоможе монтажному спеціалісту перевірити умови.</p>
+      <div class="photo-grid" id="photos"></div>
+    </section>
 
-    <!-- Step 4: Summary -->
-    <div id="step-summary" class="card hidden">
-      <div class="step-indicator">
-        <span>1. Тип</span>
-        <span>2. Замовник</span>
-        <span>3. Заміри</span>
-        <span>4. Фото</span>
-        <span class="active">5. Підсумок</span>
-      </div>
-      <h2>Підсумок заміру</h2>
-      <div id="summary-content"></div>
-      <button class="btn btn-secondary" onclick="goToStep('photos')">Назад</button>
-      <button class="btn btn-success" onclick="exportData()">Завантажити архів даних (JSON)</button>
-      <button class="btn btn-primary" onclick="alert('У повній версії тут буде відправка ZIP-архіву (дані + фото) через Telegram-бота.')">Надіслати в Telegram (прототип)</button>
-    </div>
+    <section>
+      <h2>Примітки для спеціаліста</h2>
+      <textarea id="notes" placeholder="Нерівності, комунікації, особливі умови, що потрібно врахувати при монтажі..."></textarea>
+    </section>
+
+    <section>
+      <button class="btn btn-success" onclick="exportJSON()">Завантажити дані (JSON)</button>
+      <button class="btn btn-primary" onclick="prepareTelegram()">Підготувати для Telegram</button>
+      <p class="hint" style="margin-top:8px; text-align:center;">У повній версії архів (дані + фото) відправляється ботом автоматично.</p>
+    </section>
   </div>
 
-  <footer>
-    Прототип PWA · WIŚNIOWSKI Замірник · Без AI · Для менеджерів
-  </footer>
+  <footer>Прототип · Замірник WIŚNIOWSKI · PWA</footer>
 
   <script>
     let currentType = null;
-    let formData = {};
     let photos = {};
 
-    // Type selection
-    document.querySelectorAll('.type-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        currentType = card.dataset.type;
-        document.getElementById('btn-next-type').disabled = false;
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentType = btn.dataset.type;
+        document.getElementById('meas-section').classList.remove('hidden');
+        renderMeasurements();
+        renderPhotos();
       });
     });
 
-    document.getElementById('btn-next-type').addEventListener('click', () => {
-      if (currentType) goToStep('client');
-    });
-
-    function goToStep(step) {
-      document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-      document.getElementById('step-' + step).classList.remove('hidden');
-      if (step === 'measurements') renderMeasurements();
-      if (step === 'photos') renderPhotos();
-      if (step === 'summary') renderSummary();
-      window.scrollTo(0, 0);
-    }
-
     function renderMeasurements() {
-      const container = document.getElementById('meas-content');
       const title = document.getElementById('meas-title');
+      const fields = document.getElementById('meas-fields');
+      const diagram = document.getElementById('diagram');
+      const warning = document.getElementById('meas-warning');
       let html = '';
+      let svg = '';
+      let warn = '';
 
       if (currentType === 'unipro' || currentType === 'makro') {
-        title.textContent = currentType === 'unipro' ? 'Заміри гаражних воріт UniPro / UniTherm' : 'Заміри MakroPro / Invest / Alu';
+        title.textContent = 'Заміри гаражних воріт';
+        warn = 'Міряйте So і Ho мінімум у 3 точках, беріть найменше. Перевірте діагоналі (різниця ≤ 10 мм).';
+        svg = `<svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <rect x="60" y="40" width="200" height="140" fill="none" stroke="#1e3a5f" stroke-width="3"/>
+          <text x="160" y="115" text-anchor="middle" font-size="14" fill="#1e3a5f">So</text>
+          <text x="40" y="115" text-anchor="middle" font-size="14" fill="#1e3a5f" transform="rotate(-90 40 115)">Ho</text>
+          <line x1="60" y1="20" x2="260" y2="20" stroke="#3182ce" stroke-width="2"/>
+          <text x="160" y="15" text-anchor="middle" font-size="12" fill="#3182ce">N (перемичка)</text>
+          <line x1="30" y1="40" x2="30" y2="180" stroke="#3182ce" stroke-width="2"/>
+          <text x="20" y="110" text-anchor="middle" font-size="12" fill="#3182ce" transform="rotate(-90 20 110)">W1</text>
+          <line x1="290" y1="40" x2="290" y2="180" stroke="#3182ce" stroke-width="2"/>
+          <text x="300" y="110" text-anchor="middle" font-size="12" fill="#3182ce" transform="rotate(90 300 110)">W2</text>
+          <text x="160" y="200" text-anchor="middle" font-size="11" fill="#718096">Проріз гаража (вигляд ззовні)</text>
+        </svg>`;
         html = `
-          <div class="warning">Міряйте ширину (So) і висоту (Ho) мінімум у 3 точках. Беруть найменше значення. Перевірте діагоналі (різниця ≤ 5-10 мм).</div>
-          <label>Ширина прорізу So (мм) — найменша з 3 точок</label>
-          <div class="hint">Низ / середина / верх. Запишіть найменше.</div>
-          <input type="number" id="so" placeholder="напр. 2500">
-          <label>Висота прорізу Ho (мм) — найменша з 3 точок</label>
-          <div class="hint">Ліво / центр / право. Від готової підлоги до низу перемички.</div>
-          <input type="number" id="ho" placeholder="напр. 2200">
-          <label>Перемичка N (мм)</label>
-          <div class="hint">Відстань від верху прорізу до стелі. Для автоматики зазвичай потрібно ≥140-200 мм залежно від серії.</div>
-          <input type="number" id="n" placeholder="напр. 250">
-          <label>Бічний відступ W1 (мм, ліворуч)</label>
-          <input type="number" id="w1" placeholder="напр. 120">
-          <label>Бічний відступ W2 (мм, праворуч)</label>
-          <input type="number" id="w2" placeholder="напр. 120">
-          <label>Глибина гаража Eo / відстань до перешкод (мм)</label>
-          <div class="hint">Мінімальна глибина під стелею для напрямних.</div>
-          <input type="number" id="eo" placeholder="напр. 3000">
-          <label>Колір RAL</label>
-          <input type="text" id="ral" placeholder="напр. 7016 або HI Comfort Grey">
-          <label>Тип керування</label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" id="ctrl-manual"> Ручне</label>
-            <label><input type="checkbox" id="ctrl-auto"> Автоматика</label>
-            <label><input type="checkbox" id="ctrl-remote"> Пульт</label>
+          <div class="row">
+            <div><label>So — ширина (мм)</label><div class="hint">Найменша з 3 точок</div><input type="number" id="so" placeholder="2500"></div>
+            <div><label>Ho — висота (мм)</label><div class="hint">Найменша з 3 точок</div><input type="number" id="ho" placeholder="2200"></div>
           </div>
-          <label>Додаткові примітки до замірів</label>
-          <textarea id="meas-notes" placeholder="Нерівні стіни, низька перемичка, комунікації тощо"></textarea>
+          <div class="row">
+            <div><label>N — перемичка (мм)</label><input type="number" id="n" placeholder="200"></div>
+            <div><label>Eo — глибина (мм)</label><input type="number" id="eo" placeholder="3500"></div>
+          </div>
+          <div class="row">
+            <div><label>W1 ліво (мм)</label><input type="number" id="w1" placeholder="120"></div>
+            <div><label>W2 право (мм)</label><input type="number" id="w2" placeholder="120"></div>
+          </div>
+          <label>Колір RAL / декор</label>
+          <input type="text" id="ral" placeholder="7016 або HI Comfort Grey">
+          <label>Керування</label>
+          <select id="control">
+            <option value="">Оберіть</option>
+            <option>Ручне</option>
+            <option>Автоматика</option>
+            <option>Пульт / смартфон</option>
+          </select>
         `;
       } else if (currentType === 'fence') {
-        title.textContent = 'Заміри системи огорожі';
+        title.textContent = 'Заміри огорожі та брам';
+        warn = 'Вкажіть розміри всіх елементів. За можливості зробіть фото з розміткою або схему.';
+        svg = `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="40" width="280" height="80" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4"/>
+          <text x="160" y="85" text-anchor="middle" font-size="13" fill="#1e3a5f">Схема розташування</text>
+          <text x="160" y="140" text-anchor="middle" font-size="11" fill="#718096">Секції + ворота + хвіртка</text>
+        </svg>`;
         html = `
-          <div class="warning">Зробіть схему розташування або детальні фото з розмірами. Вкажіть усі секції, ворота та хвіртки.</div>
           <label>Загальна довжина огорожі (м)</label>
-          <input type="number" id="fence-length" step="0.1" placeholder="напр. 45.5">
-          <label>Висота огорожі (мм)</label>
-          <input type="number" id="fence-height" placeholder="напр. 1500">
+          <input type="number" id="fence-len" step="0.1" placeholder="40">
+          <label>Висота (мм)</label>
+          <input type="number" id="fence-h" placeholder="1500">
           <label>Колір RAL</label>
-          <input type="text" id="ral" placeholder="напр. 7016">
-          <h3 style="margin:16px 0 8px;">Ворота розпашні</h3>
-          <label>Ширина (мм)</label>
-          <input type="number" id="swing-w" placeholder="4000">
-          <label>Висота (мм)</label>
-          <input type="number" id="swing-h" placeholder="1500">
-          <h3 style="margin:16px 0 8px;">Ворота відкатні</h3>
-          <label>Ширина (мм)</label>
-          <input type="number" id="slide-w" placeholder="5000">
-          <label>Висота (мм)</label>
-          <input type="number" id="slide-h" placeholder="1500">
+          <input type="text" id="ral" placeholder="7016">
+          <h3 style="margin:12px 0 6px; font-size:0.95rem;">Розпашні ворота</h3>
+          <div class="row">
+            <div><label>Ширина (мм)</label><input type="number" id="swing-w"></div>
+            <div><label>Висота (мм)</label><input type="number" id="swing-h"></div>
+          </div>
+          <h3 style="margin:12px 0 6px; font-size:0.95rem;">Відкатні ворота</h3>
+          <div class="row">
+            <div><label>Ширина (мм)</label><input type="number" id="slide-w"></div>
+            <div><label>Висота (мм)</label><input type="number" id="slide-h"></div>
+          </div>
           <label>Сторона від'їзду</label>
-          <select id="slide-side"><option value="">Оберіть</option><option>Ліворуч</option><option>Праворуч</option></select>
-          <h3 style="margin:16px 0 8px;">Хвіртка</h3>
-          <label>Ширина (мм)</label>
-          <input type="number" id="wicket-w" placeholder="1000">
-          <label>Висота (мм)</label>
-          <input type="number" id="wicket-h" placeholder="1500">
-          <label>Примітки / кількість секцій / матеріал</label>
-          <textarea id="fence-notes" placeholder="Секції A-E, тип заповнення, фундамент тощо"></textarea>
+          <select id="slide-side"><option value="">—</option><option>Ліво</option><option>Право</option></select>
+          <h3 style="margin:12px 0 6px; font-size:0.95rem;">Хвіртка</h3>
+          <div class="row">
+            <div><label>Ширина (мм)</label><input type="number" id="wicket-w"></div>
+            <div><label>Висота (мм)</label><input type="number" id="wicket-h"></div>
+          </div>
         `;
       } else if (currentType === 'door') {
         title.textContent = 'Заміри дверей';
+        warn = 'Ширина і висота чистового прорізу. Вкажіть тип коробки та стіни.';
+        svg = `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="30" width="120" height="180" fill="none" stroke="#1e3a5f" stroke-width="3"/>
+          <text x="100" y="120" text-anchor="middle" font-size="14" fill="#1e3a5f">Проріз</text>
+          <text x="100" y="220" text-anchor="middle" font-size="11" fill="#718096">Двері</text>
+        </svg>`;
         html = `
-          <div class="warning">Вкажіть ширину та висоту чистового прорізу. Зверніть увагу на тип коробки та стіни.</div>
           <label>Тип дверей</label>
           <select id="door-type">
             <option value="">Оберіть</option>
@@ -357,145 +282,92 @@
             <option>ECO</option>
             <option>Вогнестійкі</option>
           </select>
-          <label>Ширина (мм)</label>
-          <input type="number" id="door-w" placeholder="900">
-          <label>Висота (мм)</label>
-          <input type="number" id="door-h" placeholder="2100">
-          <label>Коробка (глибина / тип)</label>
-          <input type="text" id="door-frame" placeholder="напр. 70 мм, кутова">
-          <label>Стіна (матеріал / товщина)</label>
-          <input type="text" id="door-wall" placeholder="цегла 250 мм">
-          <label>Колір</label>
-          <input type="text" id="door-color" placeholder="RAL або декор">
-          <label>Фурнітура / замок / доводчик</label>
-          <input type="text" id="door-hardware" placeholder="опис">
-          <label>Примітки</label>
-          <textarea id="door-notes"></textarea>
+          <div class="row">
+            <div><label>Ширина (мм)</label><input type="number" id="door-w" placeholder="900"></div>
+            <div><label>Висота (мм)</label><input type="number" id="door-h" placeholder="2100"></div>
+          </div>
+          <label>Коробка / стіна</label>
+          <input type="text" id="door-frame" placeholder="Глибина коробки, матеріал стіни">
+          <label>Колір / декор</label>
+          <input type="text" id="door-color" placeholder="RAL або назва">
+          <label>Фурнітура</label>
+          <input type="text" id="door-hw" placeholder="Замок, доводчик, ручки">
         `;
       }
-      container.innerHTML = html;
+
+      diagram.innerHTML = svg;
+      fields.innerHTML = html;
+      warning.textContent = warn;
     }
 
     function renderPhotos() {
-      const container = document.getElementById('photos-content');
-      const common = [
-        { id: 'photo-front', label: 'Фасад прорізу / загальний вигляд ззовні' },
-        { id: 'photo-inside', label: 'Вигляд зсередини' },
-        { id: 'photo-lintel', label: 'Перемичка (N) крупним планом' },
-        { id: 'photo-sides', label: 'Бічні відступи (W1 і W2)' },
-        { id: 'photo-floor', label: 'Підлога в зоні монтажу' },
-        { id: 'photo-obstacles', label: 'Комунікації / перешкоди / нерівності' },
-        { id: 'photo-overview', label: 'Загальний вигляд об\'єкта / під\'їзд' }
+      const list = [
+        { id: 'front', label: 'Фасад / загальний вигляд ззовні' },
+        { id: 'inside', label: 'Вигляд зсередини' },
+        { id: 'lintel', label: 'Перемичка / верхня частина' },
+        { id: 'sides', label: 'Бічні відступи / стіни' },
+        { id: 'floor', label: 'Підлога / основа' },
+        { id: 'extra', label: 'Додатково (комунікації, нерівності)' }
       ];
-      let extra = [];
-      if (currentType === 'fence') {
-        extra = [
-          { id: 'photo-route', label: 'Траса огорожі / рельєф' },
-          { id: 'photo-gates', label: 'Місце встановлення воріт / хвіртки' }
-        ];
-      }
-      const all = [...common, ...extra];
-      container.innerHTML = all.map(p => `
-        <div class="photo-item" id="item-${p.id}">
+      document.getElementById('photos').innerHTML = list.map(p => `
+        <div class="photo-box" id="box-${p.id}">
           <strong>${p.label}</strong>
-          <div class="hint">Обов’язкове фото</div>
-          <input type="file" accept="image/*" capture="environment" data-id="${p.id}" onchange="handlePhoto(this)">
+          <input type="file" accept="image/*" capture="environment" data-id="${p.id}" onchange="onPhoto(this)" style="margin-top:6px;">
           <div class="preview"></div>
         </div>
       `).join('');
     }
 
-    function handlePhoto(input) {
+    function onPhoto(input) {
       const id = input.dataset.id;
       const file = input.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (e) => {
-        photos[id] = { name: file.name, data: e.target.result, size: file.size };
-        const item = document.getElementById('item-' + id);
-        item.classList.add('has-photo');
-        item.querySelector('.preview').innerHTML = `<img src="${e.target.result}" alt="preview">`;
+      reader.onload = e => {
+        photos[id] = { name: file.name, dataUrl: e.target.result };
+        const box = document.getElementById('box-' + id);
+        box.classList.add('has');
+        box.querySelector('.preview').innerHTML = `<img src="${e.target.result}">`;
       };
       reader.readAsDataURL(file);
     }
 
-    function collectData() {
+    function collect() {
       const data = {
         type: currentType,
-        timestamp: new Date().toISOString(),
+        date: new Date().toISOString(),
+        manager: document.getElementById('manager')?.value || '',
         client: {
           name: document.getElementById('client-name')?.value || '',
-          address: document.getElementById('client-address')?.value || '',
-          phone: document.getElementById('client-phone')?.value || '',
-          notes: document.getElementById('client-notes')?.value || '',
-          contact: document.getElementById('contact-person')?.value || ''
+          address: document.getElementById('client-address')?.value || ''
         },
+        notes: document.getElementById('notes')?.value || '',
         measurements: {},
-        photos: Object.keys(photos).map(k => ({ id: k, name: photos[k].name, size: photos[k].size }))
+        photoCount: Object.keys(photos).length
       };
-
-      // Collect measurement fields dynamically
-      document.querySelectorAll('#meas-content input, #meas-content select, #meas-content textarea').forEach(el => {
-        if (el.id) {
-          if (el.type === 'checkbox') {
-            data.measurements[el.id] = el.checked;
-          } else {
-            data.measurements[el.id] = el.value;
-          }
-        }
+      document.querySelectorAll('#meas-fields input, #meas-fields select').forEach(el => {
+        if (el.id) data.measurements[el.id] = el.value;
       });
-
       return data;
     }
 
-    function renderSummary() {
-      const data = collectData();
-      formData = data;
-      const container = document.getElementById('summary-content');
-      let html = `
-        <div class="summary-section">
-          <h3>Тип</h3>
-          <div class="summary-row"><span>Продукт</span><span>${data.type || '—'}</span></div>
-        </div>
-        <div class="summary-section">
-          <h3>Замовник</h3>
-          <div class="summary-row"><span>Ім'я</span><span>${data.client.name || '—'}</span></div>
-          <div class="summary-row"><span>Адреса</span><span>${data.client.address || '—'}</span></div>
-          <div class="summary-row"><span>Телефон</span><span>${data.client.phone || '—'}</span></div>
-        </div>
-        <div class="summary-section">
-          <h3>Заміри</h3>
-      `;
-      Object.entries(data.measurements).forEach(([k, v]) => {
-        if (v) html += `<div class="summary-row"><span>${k}</span><span>${v}</span></div>`;
-      });
-      html += `</div>
-        <div class="summary-section">
-          <h3>Фото</h3>
-          <div class="summary-row"><span>Кількість</span><span>${data.photos.length}</span></div>
-        </div>
-        <div class="warning">Перевірте дані. У повній версії тут буде генерація PDF-бланку та відправка ZIP у Telegram.</div>
-      `;
-      container.innerHTML = html;
-    }
-
-    function exportData() {
-      const data = collectData();
-      // Include photo metadata; actual base64 can be large — for prototype we note it
-      data.photoDetails = Object.fromEntries(
-        Object.entries(photos).map(([k, v]) => [k, { name: v.name, size: v.size }])
-      );
+    function exportJSON() {
+      const data = collect();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `zamir-${data.type || 'object'}-${Date.now()}.json`;
+      a.href = URL.createObjectURL(blob);
+      a.download = `zamir-${currentType || 'obj'}-${Date.now()}.json`;
       a.click();
-      URL.revokeObjectURL(url);
-      alert('JSON з даними заміру завантажено. У повній версії буде ZIP з фото + PDF.');
     }
 
-    // Register service worker
+    function prepareTelegram() {
+      const data = collect();
+      const text = `Замір WIŚNIOWSKI\nТип: ${data.type}\nМенеджер: ${data.manager}\nАдреса: ${data.client.address}\nЗамовник: ${data.client.name}\n\nЗаміри:\n${JSON.stringify(data.measurements, null, 2)}\n\nПримітки: ${data.notes}\nФото: ${data.photoCount} шт.`;
+      navigator.clipboard?.writeText(text).then(() => {
+        alert('Текст скопійовано. У повній версії архів з фото відправиться ботом автоматично.\n\n' + text.slice(0, 300) + '...');
+      }).catch(() => alert('Дані зібрано. Для відправки в Telegram потрібен бот на бекенді.'));
+    }
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
