@@ -162,8 +162,8 @@
 
     <section>
       <button class="btn btn-success" onclick="exportJSON()">Завантажити дані (JSON)</button>
-      <button class="btn btn-primary" onclick="prepareTelegram()">Підготувати для Telegram</button>
-      <p class="hint" style="margin-top:8px; text-align:center;">У повній версії архів (дані + фото) відправляється ботом автоматично.</p>
+      <button class="btn btn-primary" onclick="sendToTelegram()">Відправити в Telegram</button>
+      <p class="hint" style="margin-top:8px; text-align:center;">Відкриє Telegram з готовим текстом. Фото додайте в чат вручну. Для автоматичного архіву потрібен бот.</p>
     </section>
   </div>
 
@@ -360,12 +360,25 @@
       a.click();
     }
 
-    function prepareTelegram() {
+    function sendToTelegram() {
       const data = collect();
-      const text = `Замір WIŚNIOWSKI\nТип: ${data.type}\nМенеджер: ${data.manager}\nАдреса: ${data.client.address}\nЗамовник: ${data.client.name}\n\nЗаміри:\n${JSON.stringify(data.measurements, null, 2)}\n\nПримітки: ${data.notes}\nФото: ${data.photoCount} шт.`;
-      navigator.clipboard?.writeText(text).then(() => {
-        alert('Текст скопійовано. У повній версії архів з фото відправиться ботом автоматично.\n\n' + text.slice(0, 300) + '...');
-      }).catch(() => alert('Дані зібрано. Для відправки в Telegram потрібен бот на бекенді.'));
+      let text = `Замір WIŚNIOWSKI\n`;
+      text += `Тип: ${data.type || '—'}\n`;
+      text += `Менеджер: ${data.manager || '—'}\n`;
+      text += `Адреса: ${data.client.address || '—'}\n`;
+      text += `Замовник: ${data.client.name || '—'}\n\n`;
+      text += `Заміри:\n`;
+      Object.entries(data.measurements).forEach(([k, v]) => {
+        if (v) text += `${k}: ${v}\n`;
+      });
+      text += `\nПримітки: ${data.notes || '—'}\n`;
+      text += `Фото: ${data.photoCount} шт. (додайте вручну в чат)\n`;
+
+      const encoded = encodeURIComponent(text);
+      const url = `https://t.me/share/url?text=${encoded}`;
+      window.open(url, '_blank');
+
+      navigator.clipboard?.writeText(text).catch(() => {});
     }
 
     if ('serviceWorker' in navigator) {
