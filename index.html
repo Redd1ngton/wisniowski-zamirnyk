@@ -22,12 +22,12 @@
     .tab.on { border-color: var(--a); background: #ebf8ff; font-weight: 700; }
     .pane { display: none; }
     .pane.on { display: block; }
-    .diag { background: #f1f5f9; border-radius: 8px; padding: 10px; margin: 8px 0; position: relative; }
+    .diag { background: #f8fafc; border: 1px solid var(--bd); border-radius: 8px; padding: 12px; margin: 8px 0; }
     .diag svg { width: 100%; height: auto; display: block; }
     .meas-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
-    .meas-row label { margin: 0; min-width: 50px; font-size: .8rem; }
+    .meas-row label { margin: 0; min-width: 70px; font-size: .8rem; }
     .meas-row input { flex: 1; }
-    .arrow { font-size: 1.1rem; color: var(--a); }
+    .arrow { font-size: 1.1rem; color: var(--a); min-width: 24px; text-align: center; }
     .grid { border: 1px solid var(--bd); border-radius: 6px; background: #e2e8f0; cursor: crosshair; display: block; margin: 8px auto; }
     .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
     .tools button { padding: 7px 10px; border: 1px solid var(--bd); border-radius: 6px; background: #fff; cursor: pointer; font-size: .8rem; }
@@ -37,9 +37,8 @@
     .subtab.on { background: var(--a); color: #fff; border-color: var(--a); }
     .subpane { display: none; }
     .subpane.on { display: block; }
-    .sec-item { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-    .sec-item input { flex: 1; }
-    .sec-item button { padding: 8px 10px; background: #e53e3e; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .sec-item { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; font-size: .85rem; }
+    .sec-item button { padding: 6px 10px; background: #e53e3e; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
     .door { border: 1px solid var(--bd); border-radius: 8px; padding: 10px; margin-bottom: 10px; position: relative; }
     .x { position: absolute; top: 6px; right: 6px; background: #e53e3e; color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; cursor: pointer; }
     .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 6px; }
@@ -49,6 +48,7 @@
     .ph.ok { border-color: var(--ok); }
     .ph img { max-width: 100%; max-height: 100px; margin-top: 4px; }
     .st { text-align: center; font-size: .8rem; color: #718096; margin-top: 6px; }
+    .hint { font-size: .7rem; color: #718096; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -57,7 +57,7 @@
     <div class="card">
       <h2>Основні дані</h2>
       <label>Замовник</label><input id="cn" placeholder="ПІБ / компанія + телефон">
-      <label>Адреса</label><input id="ca" placeholder="Місто, вулиця, номер">
+      <label>Адреса об'єкта</label><input id="ca" placeholder="Місто, вулиця, номер">
       <label>Замірщик</label><input id="mg" placeholder="Ваше ім'я">
     </div>
 
@@ -72,42 +72,48 @@
 
       <div class="pane on" id="p-g">
         <div class="diag">
-          <svg viewBox="0 0 300 200">
-            <rect x="60" y="40" width="180" height="120" fill="none" stroke="#1e3a5f" stroke-width="2"/>
-            <text x="150" y="105" text-anchor="middle" font-size="13" fill="#1e3a5f">So</text>
-            <line x1="60" y1="25" x2="240" y2="25" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
-            <text x="150" y="18" text-anchor="middle" font-size="10" fill="#3182ce">N</text>
-            <line x1="30" y1="40" x2="30" y2="160" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
-            <text x="18" y="100" text-anchor="middle" font-size="10" fill="#3182ce" transform="rotate(-90 18 100)">W1</text>
-            <line x1="270" y1="40" x2="270" y2="160" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
-            <text x="282" y="100" text-anchor="middle" font-size="10" fill="#3182ce" transform="rotate(90 282 100)">W2</text>
-            <line x1="60" y1="175" x2="240" y2="175" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
-            <text x="150" y="190" text-anchor="middle" font-size="10" fill="#3182ce">Eo</text>
+          <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg">
+            <rect x="80" y="50" width="180" height="120" fill="#ffffff" stroke="#1e3a5f" stroke-width="3"/>
+            <text x="170" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e3a5f">Проріз</text>
+            <line x1="80" y1="35" x2="260" y2="35" stroke="#3182ce" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr-start)"/>
+            <text x="170" y="28" text-anchor="middle" font-size="11" fill="#3182ce" font-weight="bold">So — ширина прорізу</text>
+            <line x1="50" y1="50" x2="50" y2="170" stroke="#3182ce" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr-start)"/>
+            <text x="30" y="115" text-anchor="middle" font-size="11" fill="#3182ce" font-weight="bold" transform="rotate(-90 30 115)">Ho — висота</text>
+            <line x1="80" y1="20" x2="260" y2="20" stroke="#38a169" stroke-width="1.5" marker-end="url(#arrg)"/>
+            <text x="170" y="14" text-anchor="middle" font-size="10" fill="#38a169">N — перемичка</text>
+            <line x1="20" y1="50" x2="20" y2="170" stroke="#dd6b20" stroke-width="1.5" marker-end="url(#arro)"/>
+            <text x="8" y="115" text-anchor="middle" font-size="10" fill="#dd6b20" transform="rotate(-90 8 115)">W1 — ліворуч</text>
+            <line x1="320" y1="50" x2="320" y2="170" stroke="#dd6b20" stroke-width="1.5" marker-end="url(#arro)"/>
+            <text x="332" y="115" text-anchor="middle" font-size="10" fill="#dd6b20" transform="rotate(90 332 115)">W2 — праворуч</text>
+            <line x1="80" y1="195" x2="260" y2="195" stroke="#3182ce" stroke-width="1.5" marker-end="url(#arr)"/>
+            <text x="170" y="210" text-anchor="middle" font-size="10" fill="#3182ce">Eo — заглиблення</text>
             <defs>
-              <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                <path d="M0,0 L6,3 L0,6 Z" fill="#3182ce"/>
-              </marker>
+              <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#3182ce"/></marker>
+              <marker id="arr-start" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto"><path d="M7,0 L0,3.5 L7,7 Z" fill="#3182ce"/></marker>
+              <marker id="arrg" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#38a169"/></marker>
+              <marker id="arro" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dd6b20"/></marker>
             </defs>
           </svg>
         </div>
-        <div class="meas-row"><span class="arrow">↔</span><label>So</label><input data-f="so" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">↕</span><label>Ho</label><input data-f="ho" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>N</label><input data-f="n" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">←</span><label>W1</label><input data-f="w1" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>W2</label><input data-f="w2" placeholder="мм"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>Eo</label><input data-f="eo" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">↔</span><label>So (ширина)</label><input data-f="so" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">↕</span><label>Ho (висота)</label><input data-f="ho" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">↑</span><label>N (перемичка)</label><input data-f="n" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">←</span><label>W1 (ліворуч)</label><input data-f="w1" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">→</span><label>W2 (праворуч)</label><input data-f="w2" placeholder="мм"></div>
+        <div class="meas-row"><span class="arrow">↓</span><label>Eo (заглиблення)</label><input data-f="eo" placeholder="мм"></div>
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
-        <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт</option></select>
+        <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
+        <div class="hint">Усі розміри в міліметрах. So і Ho — світлий проріз.</div>
       </div>
 
       <div class="pane" id="p-i">
-        <div class="meas-row"><span class="arrow">↔</span><label>So</label><input type="number" data-f="so"></div>
-        <div class="meas-row"><span class="arrow">↕</span><label>Ho</label><input type="number" data-f="ho"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>N</label><input type="number" data-f="n"></div>
-        <div class="meas-row"><span class="arrow">←</span><label>W1</label><input type="number" data-f="w1"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>W2</label><input type="number" data-f="w2"></div>
-        <div class="meas-row"><span class="arrow">→</span><label>Eo</label><input type="number" data-f="eo"></div>
+        <div class="meas-row"><span class="arrow">↔</span><label>So (ширина)</label><input type="number" data-f="so"></div>
+        <div class="meas-row"><span class="arrow">↕</span><label>Ho (висота)</label><input type="number" data-f="ho"></div>
+        <div class="meas-row"><span class="arrow">↑</span><label>N (перемичка)</label><input type="number" data-f="n"></div>
+        <div class="meas-row"><span class="arrow">←</span><label>W1 (ліворуч)</label><input type="number" data-f="w1"></div>
+        <div class="meas-row"><span class="arrow">→</span><label>W2 (праворуч)</label><input type="number" data-f="w2"></div>
+        <div class="meas-row"><span class="arrow">↓</span><label>Eo (заглиблення)</label><input type="number" data-f="eo"></div>
         <label>Колір</label><input data-f="ral">
       </div>
 
@@ -120,30 +126,31 @@
 
         <div class="subpane on" id="s-sec">
           <div id="sec-list"></div>
-          <div style="display:flex; gap:6px; margin-top:6px;">
-            <input type="number" id="sec-w" placeholder="Ширина (мм)" style="flex:1">
+          <div style="display:flex; gap:6px; margin-top:6px; align-items:center;">
+            <input type="number" id="sec-w" placeholder="Ширина прольоту (мм)" style="flex:1">
             <input type="number" id="sec-h" placeholder="Висота (мм)" style="flex:1">
-            <button type="button" onclick="addSec()" style="padding:10px 12px; background:var(--a); color:#fff; border:none; border-radius:6px; cursor:pointer;">Додати</button>
+            <button type="button" onclick="addSec()" style="padding:10px 12px; background:var(--a); color:#fff; border:none; border-radius:6px; cursor:pointer; white-space:nowrap;">+ Проліт</button>
           </div>
+          <div class="hint">Додавайте кожен проліт між стовпами окремо.</div>
         </div>
 
         <div class="subpane" id="s-gate">
-          <label>Тип</label>
+          <label>Тип воріт</label>
           <select data-f="gate-type"><option value="">—</option><option>Розпашні</option><option>Відкатні</option></select>
-          <label>Ширина (мм)</label><input type="number" data-f="gate-w">
+          <label>Ширина прорізу (мм)</label><input type="number" data-f="gate-w">
           <label>Висота (мм)</label><input type="number" data-f="gate-h">
-          <label>Сторона (для відкатних)</label>
-          <select data-f="gate-side"><option value="">—</option><option>Л</option><option>П</option></select>
+          <label>Сторона відкату (для відкатних)</label>
+          <select data-f="gate-side"><option value="">—</option><option>Ліва (Л)</option><option>Права (П)</option></select>
         </div>
 
         <div class="subpane" id="s-wick">
           <label>Ширина (мм)</label><input type="number" data-f="wick-w">
           <label>Висота (мм)</label><input type="number" data-f="wick-h">
-          <label>Напрямок</label>
-          <select data-f="wick-dir"><option value="">—</option><option>ЛЗ</option><option>ЛВ</option><option>ПЗ</option><option>ПВ</option></select>
+          <label>Напрямок відкриття</label>
+          <select data-f="wick-dir"><option value="">—</option><option>ЛЗ — ліва зовні</option><option>ЛВ — ліва всередину</option><option>ПЗ — права зовні</option><option>ПВ — права всередину</option></select>
         </div>
 
-        <label style="margin-top:12px">Загальна довжина (м)</label><input type="number" data-f="len" step="0.1">
+        <label style="margin-top:12px">Загальна довжина огорожі (м)</label><input type="number" data-f="len" step="0.1">
         <label>Колір RAL</label><input data-f="ral">
 
         <div class="tools">
@@ -153,6 +160,7 @@
           <button id="tc">Очистити</button>
         </div>
         <canvas id="cv" class="grid" width="300" height="220"></canvas>
+        <div class="hint">Намалюйте контур ділянки. Ворота і хвіртку поставте схематично.</div>
       </div>
 
       <div class="pane" id="p-d">
@@ -162,10 +170,10 @@
     </div>
 
     <div class="card">
-      <h2>Фото</h2>
+      <h2>Фото об'єкта</h2>
       <div id="phs"></div>
-      <label>Примітки</label>
-      <textarea id="nt" placeholder="Нерівності, комунікації..."></textarea>
+      <label>Примітки для клієнта / монтажника</label>
+      <textarea id="nt" placeholder="Нерівності підлоги, комунікації, особливі умови, побажання клієнта..."></textarea>
     </div>
 
     <div class="card">
@@ -190,7 +198,7 @@
       document.getElementById('s-' + s.dataset.s).classList.add('on');
     });
 
-    const pts = [{id:'f',l:'Фасад'},{id:'in',l:'Зсередини'},{id:'li',l:'Перемичка'},{id:'s',l:'Бічні'},{id:'fl',l:'Підлога'},{id:'e',l:'Додатково'}];
+    const pts = [{id:'f',l:'Фасад / загальний вигляд'},{id:'in',l:'Зсередини'},{id:'li',l:'Перемичка'},{id:'s',l:'Бічні відступи'},{id:'fl',l:'Підлога'},{id:'e',l:'Додатково'}];
     document.getElementById('phs').innerHTML = pts.map(p => `<div class="ph" id="b${p.id}"><b>${p.l}</b><br><input type="file" accept="image/*" capture="environment" data-i="${p.id}" onchange="op(this)"><div class="pv"></div></div>`).join('');
     let ph = {};
     function op(el) {
@@ -218,7 +226,7 @@
     function renderSecs() {
       document.getElementById('sec-list').innerHTML = secs.map((s, i) => `
         <div class="sec-item">
-          <span style="font-size:.85rem">Проліт ${i+1}: ${s.w} × ${s.h} мм</span>
+          <span>Проліт ${i+1}: ${s.w} × ${s.h} мм</span>
           <button onclick="secs.splice(${i},1); renderSecs()">×</button>
         </div>
       `).join('');
@@ -230,15 +238,15 @@
       const d = document.createElement('div');
       d.className = 'door';
       d.innerHTML = `<button class="x" onclick="this.parentElement.remove()">×</button>
-        <label>Тип</label><select data-f="t"><option>CREO</option><option>Deco</option><option>Профільні</option><option>ECO</option></select>
+        <label>Тип дверей</label><select data-f="t"><option>CREO</option><option>Deco</option><option>Профільні</option><option>ECO</option><option>Вогнестійкі</option></select>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
-          <div><label>Ширина</label><input type="number" data-f="w"></div>
-          <div><label>Висота</label><input type="number" data-f="h"></div>
+          <div><label>Ширина (мм)</label><input type="number" data-f="w"></div>
+          <div><label>Висота (мм)</label><input type="number" data-f="h"></div>
         </div>
         <label>Напрямок відкриття</label>
-        <select data-f="dir"><option value="">—</option><option>PZ</option><option>PW</option><option>LZ</option><option>LW</option></select>
-        <label>Коробка</label><input data-f="fr">
-        <label>Колір</label><input data-f="c">
+        <select data-f="dir"><option value="">—</option><option>PZ — права зовні</option><option>PW — права всередину</option><option>LZ — ліва зовні</option><option>LW — ліва всередину</option></select>
+        <label>Коробка / стіна</label><input data-f="fr">
+        <label>Колір / декор</label><input data-f="c">
         <label>Фурнітура</label><input data-f="hw">`;
       document.getElementById('dl').appendChild(d);
     }
@@ -264,7 +272,7 @@
       ptsL.forEach(p => { cx.fillStyle = '#3182ce'; cx.beginPath(); cx.arc(p.x, p.y, 4, 0, Math.PI * 2); cx.fill(); });
       mks.forEach(m => {
         cx.fillStyle = m.t === 'g' ? '#38a169' : '#dd6b20';
-        cx.fillRect(m.x - 12, m.y - 8, 24, 16);
+        cx.fillRect(m.x - 14, m.y - 9, 28, 18);
         cx.fillStyle = '#fff'; cx.font = '9px sans-serif'; cx.textAlign = 'center';
         cx.fillText(m.l, m.x, m.y + 3);
       });
@@ -311,64 +319,135 @@
     async function mkPDF(data) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-      let y = 15;
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
-      doc.text('MiraW — Бланк замірів', 105, y, { align: 'center' }); y += 9;
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-      doc.text(`Дата: ${data.date}`, 15, y); y += 5;
-      doc.text(`Замірщик: ${data.manager || '—'}`, 15, y); y += 5;
-      doc.text(`Замовник: ${data.client.name || '—'}`, 15, y); y += 5;
-      doc.text(`Адреса: ${data.client.address || '—'}`, 15, y); y += 8;
+      let y = 18;
 
-      const sec = (t, o) => {
-        if (!o) return;
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-        doc.text(t, 15, y); y += 6;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-        Object.entries(o).forEach(([k, v]) => {
-          if (k === 'pts' || k === 'mks' || k === 'sections') return;
-          doc.text(`${k}: ${v}`, 20, y); y += 5;
-          if (y > 275) { doc.addPage(); y = 15; }
-        });
-        if (o.sections) {
-          doc.text('Секції:', 20, y); y += 5;
-          o.sections.forEach((s, i) => { doc.text(`  ${i+1}: ${s.w} × ${s.h} мм`, 25, y); y += 4.5; });
-        }
-        y += 3;
+      doc.setFillColor(30, 58, 95);
+      doc.rect(0, 0, 210, 22, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text('MiraW — Бланк замірів', 105, 14, { align: 'center' });
+      doc.setTextColor(0, 0, 0);
+      y = 30;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Дата: ${data.date}`, 15, y);
+      doc.text(`Замірщик: ${data.manager || '—'}`, 110, y); y += 6;
+      doc.text(`Замовник: ${data.client.name || '—'}`, 15, y);
+      doc.text(`Адреса: ${data.client.address || '—'}`, 110, y); y += 10;
+
+      const labelMap = {
+        so: 'So — ширина прорізу',
+        ho: 'Ho — висота прорізу',
+        n: 'N — перемичка',
+        w1: 'W1 — відступ ліворуч',
+        w2: 'W2 — відступ праворуч',
+        eo: 'Eo — заглиблення',
+        ral: 'Колір RAL',
+        ctrl: 'Керування',
+        len: 'Загальна довжина',
+        'gate-type': 'Тип воріт',
+        'gate-w': 'Ширина воріт',
+        'gate-h': 'Висота воріт',
+        'gate-side': 'Сторона відкату',
+        'wick-w': 'Ширина хвіртки',
+        'wick-h': 'Висота хвіртки',
+        'wick-dir': 'Напрямок хвіртки'
       };
+
+      const sec = (title, obj) => {
+        if (!obj) return;
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(30, 58, 95);
+        doc.text(title, 15, y); y += 7;
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        Object.entries(obj).forEach(([k, v]) => {
+          if (['pts', 'mks', 'sections'].includes(k)) return;
+          const label = labelMap[k] || k;
+          doc.text(`${label}: ${v}`, 20, y); y += 5.5;
+          if (y > 275) { doc.addPage(); y = 20; }
+        });
+        if (obj.sections && obj.sections.length) {
+          doc.setFont('helvetica', 'bold');
+          doc.text('Секції (прольоти):', 20, y); y += 5;
+          doc.setFont('helvetica', 'normal');
+          obj.sections.forEach((s, i) => {
+            doc.text(`  Проліт ${i+1}: ${s.w} × ${s.h} мм`, 25, y); y += 5;
+          });
+        }
+        y += 4;
+      };
+
       sec('Гаражні ворота', data.m.garage);
       sec('Промислові ворота', data.m.ind);
+
       if (data.m.fence) {
         sec('Огородження', data.m.fence);
         if (ptsL.length || mks.length) {
-          if (y > 190) { doc.addPage(); y = 15; }
-          doc.addImage(cv.toDataURL('image/png'), 'PNG', 15, y, 75, 55);
-          y += 60;
+          if (y > 180) { doc.addPage(); y = 20; }
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.text('Схема огорожі:', 15, y); y += 6;
+          doc.addImage(cv.toDataURL('image/png'), 'PNG', 15, y, 80, 58);
+          y += 65;
         }
       }
-      if (data.m.doors) {
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-        doc.text('Двері', 15, y); y += 6;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+
+      if (data.m.doors && data.m.doors.length) {
+        if (y > 240) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(30, 58, 95);
+        doc.text('Двері', 15, y); y += 7;
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
         data.m.doors.forEach((dd, i) => {
+          doc.setFont('helvetica', 'bold');
           doc.text(`Двері ${i + 1}:`, 20, y); y += 5;
-          Object.entries(dd).forEach(([k, v]) => { doc.text(`  ${k}: ${v}`, 25, y); y += 4.5; if (y > 275) { doc.addPage(); y = 15; } });
-          y += 2;
+          doc.setFont('helvetica', 'normal');
+          const dmap = { t: 'Тип', w: 'Ширина', h: 'Висота', dir: 'Напрямок відкриття', fr: 'Коробка', c: 'Колір', hw: 'Фурнітура' };
+          Object.entries(dd).forEach(([k, v]) => {
+            doc.text(`  ${dmap[k] || k}: ${v}`, 25, y); y += 5;
+            if (y > 275) { doc.addPage(); y = 20; }
+          });
+          y += 3;
         });
       }
+
       if (data.notes) {
-        if (y > 255) { doc.addPage(); y = 15; }
-        doc.setFont('helvetica', 'bold'); doc.text('Примітки:', 15, y); y += 5;
+        if (y > 240) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(30, 58, 95);
+        doc.text('Примітки', 15, y); y += 6;
+        doc.setTextColor(0, 0, 0);
         doc.setFont('helvetica', 'normal');
-        doc.text(doc.splitTextToSize(data.notes, 170), 15, y);
+        doc.setFontSize(10);
+        const lines = doc.splitTextToSize(data.notes, 175);
+        doc.text(lines, 15, y);
       }
+
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`MiraW — бланк замірів   стор. ${i}/${pageCount}`, 105, 290, { align: 'center' });
+      }
+
       return doc.output('blob');
     }
 
     async function zip() {
       const data = col();
       const z = new JSZip();
-      z.file('бланк.pdf', await mkPDF(data));
+      z.file('бланк_замірів.pdf', await mkPDF(data));
       let n = 1;
       for (const [k, v] of Object.entries(ph)) {
         if (v.b) z.file(`фото_${n}_${k}.${(v.n.split('.').pop() || 'jpg').toLowerCase()}`, v.b);
@@ -383,7 +462,7 @@
         const { b, n, d } = await zip();
         const f = new File([b], n, { type: 'application/zip' });
         if (navigator.share && navigator.canShare?.({ files: [f] })) {
-          await navigator.share({ title: 'MiraW', text: `${d.manager} — ${d.client.address}`, files: [f] });
+          await navigator.share({ title: 'MiraW — замір', text: `${d.manager} — ${d.client.address}`, files: [f] });
           document.getElementById('st').textContent = 'Надіслано';
         } else { down(b, n); document.getElementById('st').textContent = 'ZIP завантажено'; }
       } catch (e) { document.getElementById('st').textContent = 'Помилка: ' + e.message; }
