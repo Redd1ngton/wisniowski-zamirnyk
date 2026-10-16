@@ -118,8 +118,11 @@
         <label>Колір RAL</label><input data-f="ral">
         <label>Керування</label>
         <select data-f="ctrl"><option value="">—</option><option>Ручне</option><option>Автоматика</option><option>Пульт / смартфон</option></select>
+        <label>Примітка до цих воріт</label>
+        <textarea data-f="note" placeholder="Особливості цього прорізу..."></textarea>
         <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
         <div class="phs" data-tab="g"></div>
+        <button class="btn" style="background:#edf2f7;margin-top:10px" onclick="addItem('g')">+ Додати гаражні ворота</button>
       </div>
 
       <div class="pane" id="p-i">
@@ -149,8 +152,16 @@
         <div class="hint">Ті самі правила, що й для гаражних: So/Ho — світлий проріз, N — перемичка, W1/W2 — бічні відступи.</div>
         <div class="warn-msg" id="w-i">Перевірте розмір: значення виглядає нетиповим</div>
         <label>Колір</label><input data-f="ral">
+        <label>Автоматика / редуктор</label>
+        <select data-f="auto"><option value="">—</option><option>Автоматика</option><option>Редуктор</option><option>Без автоматики</option></select>
+        <label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+          <input type="checkbox" data-f="photoels" style="width:auto"> Фотоелементи
+        </label>
+        <label>Примітка до цих воріт</label>
+        <textarea data-f="note" placeholder="Особливості цього прорізу..."></textarea>
         <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
         <div class="phs" data-tab="i"></div>
+        <button class="btn" style="background:#edf2f7;margin-top:10px" onclick="addItem('i')">+ Додати промислові ворота</button>
       </div>
 
       <div class="pane" id="p-f">
@@ -195,6 +206,8 @@
         </div>
         <canvas id="cv" class="grid" width="300" height="220"></canvas>
         <div class="hint">Додатково: намалюйте контур ділянки пальцем. Ворота/хвіртку ставте схематично.</div>
+        <label style="margin-top:12px">Примітка до огорожі</label>
+        <textarea data-f="note" placeholder="Особливості ділянки, стовпів, фундаменту..."></textarea>
         <h3 style="margin-top:16px;font-size:.95rem;color:#1e3a5f">Фото</h3>
         <div class="phs" data-tab="f"></div>
       </div>
@@ -330,6 +343,20 @@
       `).join('');
     }
 
+    function addItem(type) {
+      const pane = document.getElementById('p-' + type);
+      const clone = pane.querySelector('.diag').parentElement.cloneNode(true);
+      clone.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+      clone.querySelectorAll('.phs').forEach(ph => ph.innerHTML = '');
+      const btn = document.createElement('button');
+      btn.className = 'x';
+      btn.textContent = '×';
+      btn.onclick = () => clone.remove();
+      clone.style.position = 'relative';
+      clone.insertBefore(btn, clone.firstChild);
+      pane.insertBefore(clone, pane.querySelector('button'));
+    }
+
     let dc = 0;
     function addD() {
       dc++;
@@ -347,7 +374,9 @@
         <div class="hint">PZ = права петля, відкривається назовні. LW = ліва петля, відкривається всередину.</div>
         <label>Коробка / стіна</label><input data-f="fr">
         <label>Колір / декор</label><input data-f="c">
-        <label>Фурнітура</label><input data-f="hw">`;
+        <label>Фурнітура</label><input data-f="hw">
+        <label>Примітка до цих дверей</label>
+        <textarea data-f="note" placeholder="Особливості..."></textarea>`;
       document.getElementById('dl').appendChild(d);
     }
     addD();
@@ -400,8 +429,23 @@
         document.querySelectorAll(sel + ' [data-f]').forEach(el => { if (el.value) o[el.dataset.f] = el.value; });
         return Object.keys(o).length ? o : null;
       };
-      const gg = g('#p-g'); if (gg) d.m.garage = gg;
-      const ii = g('#p-i'); if (ii) d.m.ind = ii;
+      const collectMany = (sel) => {
+        const arr = [];
+        document.querySelectorAll(sel).forEach(block => {
+          const o = {};
+          block.querySelectorAll('[data-f]').forEach(el => {
+            if (el.type === 'checkbox') o[el.dataset.f] = el.checked ? 'Так' : '';
+            else if (el.value) o[el.dataset.f] = el.value;
+          });
+          if (Object.keys(o).length) arr.push(o);
+        });
+        return arr.length ? arr : null;
+      };
+
+      d.m.garage = collectMany('#p-g > div:not(.phs)') || null;
+      if (d.m.garage && d.m.garage.length === 1) d.m.garage = d.m.garage[0];
+      d.m.ind = collectMany('#p-i > div:not(.phs)') || null;
+      if (d.m.ind && d.m.ind.length === 1) d.m.ind = d.m.ind[0];
       const ff = g('#p-f') || {};
       if (secs.length) ff.sections = secs;
       if (ptsL.length || mks.length) { ff.pts = ptsL; ff.mks = mks; }
@@ -460,6 +504,9 @@
         eo: 'Eo — заглиблення',
         ral: 'Колір RAL',
         ctrl: 'Керування',
+        auto: 'Автоматика / редуктор',
+        photoels: 'Фотоелементи',
+        note: 'Примітка',
         len: 'Загальна довжина',
         'gate-type': 'Тип воріт',
         'gate-w': 'Ширина воріт',
@@ -469,7 +516,7 @@
         'wick-h': 'Висота хвіртки',
         'wick-dir': 'Напрямок хвіртки'
       };
-      const dmap = { t: 'Тип', w: 'Ширина', h: 'Висота', dir: 'Напрямок відкриття', fr: 'Коробка', c: 'Колір', hw: 'Фурнітура' };
+      const dmap = { t: 'Тип', w: 'Ширина', h: 'Висота', dir: 'Напрямок відкриття', fr: 'Коробка', c: 'Колір', hw: 'Фурнітура', note: 'Примітка' };
 
       const rows = (obj, skip = []) => {
         if (!obj) return '';
@@ -536,8 +583,8 @@
   <div><b>Адреса:</b> ${data.client.address || '—'}</div>
 </div>
 
-${data.m.garage ? `<h2>Гаражні ворота</h2>${gateSVG(data.m.garage)}<table>${rows(data.m.garage)}</table>` : ''}
-${data.m.ind ? `<h2>Промислові ворота</h2>${gateSVG(data.m.ind)}<table>${rows(data.m.ind)}</table>` : ''}
+${Array.isArray(data.m.garage) ? data.m.garage.map((g,i)=>`<h2>Гаражні ворота ${i+1}</h2>${gateSVG(g)}<table>${rows(g)}</table>`).join('') : (data.m.garage ? `<h2>Гаражні ворота</h2>${gateSVG(data.m.garage)}<table>${rows(data.m.garage)}</table>` : '')}
+${Array.isArray(data.m.ind) ? data.m.ind.map((g,i)=>`<h2>Промислові ворота ${i+1}</h2>${gateSVG(g)}<table>${rows(g)}</table>`).join('') : (data.m.ind ? `<h2>Промислові ворота</h2>${gateSVG(data.m.ind)}<table>${rows(data.m.ind)}</table>` : '')}
 ${data.m.fence ? `<h2>Огородження</h2><table>${rows(data.m.fence, ['pts','mks','sections'])}${sectionsHtml}</table>${schemaImg}` : ''}
 ${doorsHtml ? `<h2>Двері</h2>${doorsHtml}` : ''}
 ${data.notes ? `<h2>Примітки</h2><div class="notes">${data.notes.replace(/</g,'<')}</div>` : ''}
